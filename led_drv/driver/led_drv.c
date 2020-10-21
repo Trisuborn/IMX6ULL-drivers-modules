@@ -44,7 +44,7 @@ static void __exit led_drv_exit(void);
  */
 module_init(led_drv_init);
 module_exit(led_drv_exit);
-MODULE_AUTHOR( "Trisuborn" );
+MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>" );
 MODULE_DESCRIPTION( "led driver." );
 MODULE_LICENSE("GPL");
 
