@@ -25,16 +25,16 @@ static const char *dev_def_path = "/dev/hello";
 static const char *def_text     = "Hello world !"; 
 
 typedef struct {
-    int         cmd_num ;
-    const char *cmd_opt ;
-    const char *dev_path;
-    const char *user_str;
+    int          cmd_num ;
+    char         cmd_opt [4];
+    char         dev_path[16];
+    char         user_str[APP_BUF_LEN];
 } cmd_s;
 cmd_s input_cmd = {
-    .cmd_num    = 0,
-    .cmd_opt    = NULL,
-    .dev_path   = NULL,
-    .user_str   = NULL,
+    .cmd_num    = 0, 
+    .cmd_opt    = {0}, 
+    .dev_path   = {0},
+    .user_str   = {0},
 };
 
 typedef enum {
@@ -58,25 +58,20 @@ HELLO_OPT_ENUM analysis_cmd( void )
 
 
     if ( input_cmd.cmd_num == 1 ) {
-        input_cmd.cmd_opt  = "-h";
     } else if ( strcmp( "-r", input_cmd.cmd_opt ) == 0 ) {
-        input_cmd.cmd_opt  = "-r";
         flag = HELLO_READ;
     } else if ( strcmp( "-w", input_cmd.cmd_opt ) == 0 ) {
-        input_cmd.cmd_opt  = "-w";
         flag = HELLO_WRIT;
     } else if ( strcmp( "-h", input_cmd.cmd_opt ) == 0 ) {
-        input_cmd.cmd_opt  = "-h";
         flag = HELLO_HELP;
     } else if ( input_cmd.cmd_opt == NULL || (input_cmd.cmd_num < 3) ) {
-        input_cmd.cmd_opt  = "-h";
         flag = HELLO_HELP;
     }
         
     if ( input_cmd.dev_path == NULL || (input_cmd.cmd_num < 3) )
-        input_cmd.dev_path = dev_def_path; 
+        strcpy( input_cmd.dev_path, dev_def_path );
     if ( input_cmd.user_str == NULL || (input_cmd.cmd_num < 3) )
-        input_cmd.user_str = def_text;
+        strcpy( input_cmd.user_str, def_text );
 
     return flag;
 }
@@ -123,18 +118,16 @@ int implement_cmd( HELLO_OPT_ENUM which_opt )
 
 int main(int argc, char const *argv[])
 {
-    input_cmd.cmd_num  = argc   ;
-    if ( input_cmd.cmd_num == 1 ) {
-        implement_cmd(analysis_cmd());
-    } else {
-        if ( argc == 2 )
-            input_cmd.cmd_opt  = argv[1];
-        if ( argc == 3 )
-            input_cmd.dev_path = argv[2];
-        if ( argc == 4 )
-            input_cmd.user_str = argv[3];
-        implement_cmd(analysis_cmd());
-    }
+    input_cmd.cmd_num  = argc;
+    if ( input_cmd.cmd_num >= 2 ) 
+        strcpy( input_cmd.cmd_opt, argv[1] );
+    if ( input_cmd.cmd_num >= 3 ) 
+        strcpy( input_cmd.dev_path, argv[2] );
+    if ( input_cmd.cmd_num >= 4 ) 
+        strcpy( input_cmd.user_str, argv[3] );
+
+    implement_cmd(analysis_cmd());
+
 
     return 0;
 }
