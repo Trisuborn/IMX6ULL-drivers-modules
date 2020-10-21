@@ -9,18 +9,22 @@
  * @copyright Copyright (c) 2020
  * 
  ************************/
-
-#include <linux/cdev.h>
-#include <linux/device.h>
-#include <linux/fs.h>
-#include <linux/init.h>
-#include <linux/jiffies.h>
-#include <linux/kernel.h>
-#include <linux/list.h>
 #include <linux/module.h>
-#include <linux/notifier.h>
-#include <linux/slab.h>
-#include <linux/uaccess.h>
+#include <linux/fs.h>
+#include <linux/errno.h>
+#include <linux/miscdevice.h>
+#include <linux/kernel.h>
+#include <linux/major.h>
+#include <linux/mutex.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+#include <linux/stat.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/tty.h>
+#include <linux/kmod.h>
+#include <linux/gfp.h>
+#include <asm/io.h>
 
 /************************
  * @brief user header files
@@ -77,9 +81,10 @@ static ssize_t led_drv_read (struct file *file, char __user * ubuf, size_t size,
 static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t size, loff_t *off) 
 {
     printk( "write size: %d\n", size );
-
+    struct inode * inode = file_inode( file );
+    u8 ledx = iminor( inode );
     
-    
+    led_opr_p->ctl( ledx, opt );
     return size;
 }
 

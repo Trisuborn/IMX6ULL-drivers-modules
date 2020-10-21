@@ -12,6 +12,7 @@
 #include <linux/compat.h>
 #include <linux/of.h>
 #include <linux/cdev.h>
+#include <asm/io.h>
 
 static void ebf6ull_led_init( u8 which_led );
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt );
@@ -28,7 +29,7 @@ static void ebf6ull_led_init( u8 which_led )
 
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
 {
-
+    
 }
 
 led_ctl_typedef *ebf6ull_led_opr_get(void) 

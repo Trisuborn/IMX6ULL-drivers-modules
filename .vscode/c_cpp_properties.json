@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "/home/su/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/include/**",
+                "~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/include/**",
+                "~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/arch/arm/include/**",
                 "/usr/arm-linux-gnueabihf/include/**",
                 "${workspaceFolder}/**"
             ],
