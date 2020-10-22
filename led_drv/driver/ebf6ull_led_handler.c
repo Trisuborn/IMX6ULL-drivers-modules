@@ -1,3 +1,5 @@
+
+
 #include "ebf6ull_led_handler.h"
 #include <linux/init.h>
 #include <linux/module.h>
@@ -14,6 +16,12 @@
 #include <linux/cdev.h>
 #include <asm/io.h>
 
+/************************
+ * @brief user's includes
+ ************************/
+#include "fsl_gpio.h"
+
+
 static void ebf6ull_led_init( u8 which_led );
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt );
 
@@ -29,7 +37,7 @@ static void ebf6ull_led_init( u8 which_led )
 
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
 {
-    
+    GPIO_PinInit
 }
 
 led_ctl_typedef *ebf6ull_led_opr_get(void) 

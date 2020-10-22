@@ -1,6 +1,8 @@
 
 include ../mk.conf
 
+SDK_PATH = ../../sdk/
+
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
 
@@ -11,15 +13,13 @@ INC_DIR	 	=  	$(addprefix -I, $(TEMP))
 CFLAGS =  -pipe -O0 -std=c99 -fno-stack-protector
 
 src_all		+= $(wildcard *.c)
-src_all		+= $(wildcard ./sdk/*.c)
+src_all		+= $(wildcard $(SDK_PATH)*.c)
 obj_all		= $(patsubst %.c, %.o, $(src_all))
 
 all:led_app
 	@ cp led_app ../
 led_app:$(src_all)
-	@ make -C ./sdk
-	@ $(CC) $(CFLAGS) -o led_app led_app.c ./sdk/*.o
+	$(CC) $(CFLAGS) -o led_app led_app.c $(SDK_PATH)*.o
 	
 clean:
 	@ rm -rf *.o led_app ../led_app
-	@ make -C ./sdk clean
