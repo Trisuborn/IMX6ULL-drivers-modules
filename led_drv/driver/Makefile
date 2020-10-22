@@ -2,6 +2,8 @@
 
 KENAL_DIR 	    = ~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master
 
+EXTRA_CFLAGS += -I~/IMX6ULL/mod/sdk ##私有内核头文件在这里添加
+
 CUR_PATH	= $(shell pwd)
 
 src_all		= $(wildcard *.c)

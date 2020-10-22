@@ -19,7 +19,7 @@
 /************************
  * @brief user's includes
  ************************/
-#include "fsl_gpio.h"
+#include "../../sdk/fsl_gpio.h"
 
 
 static void ebf6ull_led_init( u8 which_led );
