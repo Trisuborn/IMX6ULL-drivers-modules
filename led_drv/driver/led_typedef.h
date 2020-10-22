@@ -13,4 +13,11 @@ typedef struct {
     void (*ctl)     ( u8 which_led, u8 opt );    
 } led_ctl_typedef;
 
+typedef enum {
+    LED_D4  = 0 ,
+    LED_D5      ,
+    LED_D6      ,
+    LED_D7      ,
+} LED_Dx;
+
 #endif // !__LED_TYPEDEF_H__

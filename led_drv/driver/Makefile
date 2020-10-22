@@ -2,7 +2,7 @@
 
 KENAL_DIR 	    = ~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master
 
-ccflags-y += -I/usr/lib/gcc-cross/arm-linux-gnueabihf/9/ -lgcc  ##私有内核头文件在这里添加
+ccflags-y +=   ##私有内核头文件在这里添加
 
 CUR_PATH	= $(shell pwd)
 

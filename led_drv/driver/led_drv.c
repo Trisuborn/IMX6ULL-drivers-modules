@@ -83,10 +83,9 @@ static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t 
     struct inode * inode = file_inode( file );
     u8 ledx = iminor( inode );
     char opt  = 0;
-    int err = 0;
+    unsigned long err;
+
     err = copy_from_user( &opt, ubuf, 1 );
-    printk( "opt: %d\n", opt );
-    printk( "led: %d\n", ledx );
     led_opr_p->ctl( ledx, opt );
     return 1;
 }
