@@ -31,7 +31,7 @@
 #ifndef _FSL_IOMUXC_H_
 #define _FSL_IOMUXC_H_
 
-#include "fsl_common.h"
+//#include "fsl_common.h"
 
 /*!
  * @addtogroup iomuxc_driver

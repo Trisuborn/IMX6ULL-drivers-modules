@@ -19,8 +19,7 @@
 /************************
  * @brief user's includes
  ************************/
-#include "fsl_device_registers.h"
-#include "fsl_gpio.h"
+#include "common_inc.h"
 
 
 static void ebf6ull_led_init( u8 which_led );
@@ -35,14 +34,9 @@ static void ebf6ull_led_init( u8 which_led )
 {
     printk( "init led%d\n", which_led );
 
-    GPIO_Type ledx_pin;
-    gpio_pin_config_t ledx_conf;
-
-    ledx_conf.direction = kGPIO_DigitalOutput;
-    ledx_conf.interruptMode = kGPIO_NoIntmode;
-    ledx_conf.outputLogic = 0;
-
-    GPIO_PinInit( GPIO5, 3, &ledx_conf );
+    ioremap(  );
+    
+    printk( "CCM_CCGR1_CG0(0) : 0x%X\n", (IOMUXC_SNVS_SNVS_TAMPER3_GPIO5_IO03+4) );
 
     printk( "init led%d done.\n", which_led );
 }

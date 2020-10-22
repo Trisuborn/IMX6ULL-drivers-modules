@@ -8,3 +8,12 @@
  * @copyright Copyright (c) 2020
  * 
  ************************/
+
+#ifndef COMMON_H
+#define COMMON_H
+
+#include "MCIMX6Y2.h"
+#include "fsl_iomuxc.h"
+
+
+#endif // !COMMON_H
