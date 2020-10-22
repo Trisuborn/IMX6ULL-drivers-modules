@@ -6,7 +6,7 @@
                 "~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/include/**",
                 "~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/arch/arm/**",
                 "/usr/arm-linux-gnueabihf/include/**",
-                "${workspaceFolder}/**",
+                "${workspaceFolder}/**"
             ],
             "defines": [],
             "cStandard": "c99",

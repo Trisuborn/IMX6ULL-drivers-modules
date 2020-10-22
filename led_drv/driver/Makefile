@@ -2,18 +2,19 @@
 
 KENAL_DIR 	    = ~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master
 
-EXTRA_CFLAGS += -I~/IMX6ULL/mod/sdk ##私有内核头文件在这里添加
+EXTRA_CFLAGS += -I../../sdk  ##私有内核头文件在这里添加
 
 CUR_PATH	= $(shell pwd)
 
 src_all		= $(wildcard *.c)
 obj_all		= $(patsubst %.c, %.o, $(src_all))
 
-ebf6ull_led_drv-y := ebf6ull_led_handler.o led_drv.o # leddrv.o board_100ask_imx6ull-qemu.o
+ebf6ull_led_drv-y := ebf6ull_led_handler.o 
+ebf6ull_led_drv-y += led_drv.o
 obj-m   += ebf6ull_led_drv.o
 
 all:
-	@ make -C $(KENAL_DIR) M=$(CUR_PATH) modules 
+	make -C $(KENAL_DIR) M=$(CUR_PATH) modules 
 	cp *.ko ../
 clean:
 	@ make -C $(KENAL_DIR) M=$(CUR_PATH) modules clean 

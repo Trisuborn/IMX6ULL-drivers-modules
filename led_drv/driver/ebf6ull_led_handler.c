@@ -19,7 +19,7 @@
 /************************
  * @brief user's includes
  ************************/
-#include "../../sdk/fsl_gpio.h"
+#include "MCIMX6Y2.h"
 
 
 static void ebf6ull_led_init( u8 which_led );
@@ -37,7 +37,7 @@ static void ebf6ull_led_init( u8 which_led )
 
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
 {
-    GPIO_PinInit
+
 }
 
 led_ctl_typedef *ebf6ull_led_opr_get(void) 
