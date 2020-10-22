@@ -18,7 +18,7 @@
 #include <string.h> 
 
 static char def_led[] = "LED_D7";
-static char def_opt[] = "on";
+static char def_opt[] = "off";
 static char path_prefix[20] = "/dev/";
 
 typedef struct {
@@ -53,16 +53,22 @@ int analysis_cmd( void )
     }
     write(fd, &status, 1);
     close( fd );
-    
+
+    return 0;
 }
 
 int main( int argc, char **args )
 {
-    input_cmd.param_num = argc   ;
-    if ( input_cmd.param_num >= 2 )
+    input_cmd.param_num = argc;
+    if ( input_cmd.param_num >= 2 ){
+        if ( !strcmp(args[1], "-h") || (!strcmp( args[1], "-help" )) ) {
+            printf( "Usage: ./led_app {LED_D4...LED_D7} {on | off}\n" );
+            return 0;
+        }
         strcpy( input_cmd.ledx, args[1] );
+    }
     if ( input_cmd.param_num >= 3 )
         strcpy( input_cmd.ledx_opt, args[2] );
-    
+
     return analysis_cmd();
 }

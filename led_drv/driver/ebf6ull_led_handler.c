@@ -32,7 +32,6 @@ __IO static u32 *REMAP_GPIOx_DR     = NULL;
 __IO static u32 *REMAP_GPIOx_GDIR   = NULL;
 
 
-
 static led_ctl_typedef ebf6ull_led_opr_s = {
     .init   = ebf6ull_led_init,
     .ctl    = ebf6ull_led_ctl,
@@ -43,21 +42,30 @@ static void ebf6ull_led_init( u8 which_led )
     switch ( which_led ) {
     case LED_D4:     // EBF6ULL的 LED_D4
         REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x6C)         , 4 );
-        REMAP_GPIOx_PIN   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x14) , 4 );
-        REMAP_GPIOx_DR    = (__IO u32 *)ioremap( (u32)(&(GPIO5->DR))       , 4 );
-        REMAP_GPIOx_GDIR  = (__IO u32 *)ioremap( (u32)(&(GPIO5->GDIR))     , 4 );
+        REMAP_GPIOx_PIN   = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x6C)      , 4 );
+        REMAP_GPIOx_DR    = (__IO u32 *)ioremap( (u32)(&(GPIO1->DR))       , 4 );
+        REMAP_GPIOx_GDIR  = (__IO u32 *)ioremap( (u32)(&(GPIO1->GDIR))     , 4 );
+        *REMAP_CCM_CCGRx  |= (3 << 26);
+        *REMAP_GPIOx_PIN  = 0x05;
+        *REMAP_GPIOx_GDIR |= (1 << 4);
         break;
     case LED_D5:     // EBF6ULL的 LED_D5
-        REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x6C)         , 4 );
-        REMAP_GPIOx_PIN   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x14) , 4 );
-        REMAP_GPIOx_DR    = (__IO u32 *)ioremap( (u32)(&(GPIO5->DR))       , 4 );
-        REMAP_GPIOx_GDIR  = (__IO u32 *)ioremap( (u32)(&(GPIO5->GDIR))     , 4 );
+        REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x74)         , 4 );
+        REMAP_GPIOx_PIN   = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1E0)     , 4 );
+        REMAP_GPIOx_DR    = (__IO u32 *)ioremap( (u32)(&(GPIO4->DR))       , 4 );
+        REMAP_GPIOx_GDIR  = (__IO u32 *)ioremap( (u32)(&(GPIO4->GDIR))     , 4 );
+        *REMAP_CCM_CCGRx  |= (3 << 12);
+        *REMAP_GPIOx_PIN  = 0x05;
+        *REMAP_GPIOx_GDIR |= (1 << 20);
         break;
     case LED_D6:     // EBF6ULL的 LED_D6
-        REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x6C)         , 4 );
-        REMAP_GPIOx_PIN   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x14) , 4 );
-        REMAP_GPIOx_DR    = (__IO u32 *)ioremap( (u32)(&(GPIO5->DR))       , 4 );
-        REMAP_GPIOx_GDIR  = (__IO u32 *)ioremap( (u32)(&(GPIO5->GDIR))     , 4 );
+        REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x74)         , 4 );
+        REMAP_GPIOx_PIN   = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1DC)     , 4 );
+        REMAP_GPIOx_DR    = (__IO u32 *)ioremap( (u32)(&(GPIO4->DR))       , 4 );
+        REMAP_GPIOx_GDIR  = (__IO u32 *)ioremap( (u32)(&(GPIO4->GDIR))     , 4 );
+        *REMAP_CCM_CCGRx  |= (3 << 12);
+        *REMAP_GPIOx_PIN  = 0x05;
+        *REMAP_GPIOx_GDIR |= (1 << 19);
         break;
     case LED_D7:     // EBF6ULL的 LED_D7
         REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x6C)         , 4 );
@@ -79,19 +87,19 @@ static void ebf6ull_led_init( u8 which_led )
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
 {
     u32 pin_oft = 0;
-    
+
     printk( "LED_D%d status: %d\n", which_led, opt );
 
     /* 引脚偏移 */
     switch (which_led) {
     case LED_D4:
-        
+        pin_oft = (1 << 4);
         break;
     case LED_D5:
-        
+        pin_oft = (1 << 20);
         break;
     case LED_D6:
-        
+        pin_oft = (1 << 19);
         break;
     case LED_D7:
         pin_oft = (1 << 3);
