@@ -55,7 +55,7 @@ MODULE_LICENSE("GPL");
 /************************
  * @brief define
  ************************/
-#define LED_NUM     3
+#define LED_NUM     4
 
 /************************
  * @brief static var
@@ -80,12 +80,15 @@ static ssize_t led_drv_read (struct file *file, char __user * ubuf, size_t size,
 
 static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t size, loff_t *off) 
 {
-    printk( "write size: %d\n", size );
     struct inode * inode = file_inode( file );
     u8 ledx = iminor( inode );
-    
+    char opt  = 0;
+    int err = 0;
+    err = copy_from_user( &opt, ubuf, 1 );
+    printk( "opt: %d\n", opt );
+    printk( "led: %d\n", ledx );
     led_opr_p->ctl( ledx, opt );
-    return size;
+    return 1;
 }
 
 static int led_drv_open (struct inode *inode, struct file *file) 
@@ -121,7 +124,7 @@ static int __init led_drv_init(void)
     led_opr_p = ebf6ull_led_opr_get();
 
     for ( i = 0; i < LED_NUM; i++ )
-        device_create(led_drv_class, NULL, MKDEV(major, i), NULL, "ebf6ull_led_D%d", i+4); 
+        device_create(led_drv_class, NULL, MKDEV(major, i), NULL, "LED_D%d", i+4); 
 
     return 0;
 }
