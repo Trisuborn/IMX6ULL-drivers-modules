@@ -4,14 +4,17 @@
             "name": "Linux",
             "includePath": [
                 "~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/include/**",
-                "~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/arch/arm/**",
+                "~/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/arch/arm/include/**",
                 "/usr/arm-linux-gnueabihf/include/**",
                 "${workspaceFolder}/**"
             ],
             "defines": [],
             "cStandard": "c99",
             "cppStandard": "gnu++14",
-            "intelliSenseMode": "gcc-arm"
+            "intelliSenseMode": "gcc-arm",
+            "compilerArgs": [
+                "-D__KERNEL__"
+            ]
         }
     ],
     "version": 4

@@ -36,7 +36,7 @@ static void ebf6ull_led_init( u8 which_led )
 
     ioremap(  );
     
-    printk( "CCM_CCGR1_CG0(0) : 0x%X\n", (IOMUXC_SNVS_SNVS_TAMPER3_GPIO5_IO03+4) );
+    printk( "CCM_CCGR1_CG0(0) : 0x%X\n", IOMUXC_SNVS_SNVS_TAMPER3_GPIO5_IO03 );
 
     printk( "init led%d done.\n", which_led );
 }
