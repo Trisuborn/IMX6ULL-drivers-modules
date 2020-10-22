@@ -44,6 +44,7 @@ static void ebf6ull_led_init( u8 which_led )
 
     GPIO_PinInit( GPIO5, 3, &ledx_conf );
 
+    printk( "init led%d done.\n", which_led );
 }
 
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
