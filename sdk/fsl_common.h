@@ -43,17 +43,6 @@
 
 #include "fsl_device_registers.h"
 
-#ifndef NDEBUG
-#define assert(expr)  \
-   if(expr)  \
-       do{ \
-         fprintf(stderr, "Assertion failed:%s, file %s, line %d\n", #expr, __FILE__,__LINE__); \
-         abort(); \
-       }while(0)
-#else
-#define assert(expr)  ASSERT_VOID_CAST(0)
-#endif
-
 /*!
  * @addtogroup ksdk_common
  * @{

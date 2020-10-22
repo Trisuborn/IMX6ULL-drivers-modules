@@ -19,7 +19,8 @@
 /************************
  * @brief user's includes
  ************************/
-#include "MCIMX6Y2.h"
+#include "fsl_device_registers.h"
+#include "fsl_gpio.h"
 
 
 static void ebf6ull_led_init( u8 which_led );
@@ -37,7 +38,6 @@ static void ebf6ull_led_init( u8 which_led )
 
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
 {
-    GPIO_Type gpio;
 
     
 }
