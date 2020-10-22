@@ -31,8 +31,9 @@
 #ifndef _FSL_GPIO_H_
 #define _FSL_GPIO_H_
 
+#include "fsl_clock.h"
 // #include "fsl_common.h"
-
+#include "MCIMX6Y2.h"
 /*!
  * @addtogroup gpio_driver
  * @{
@@ -180,6 +181,7 @@ static inline uint8_t GPIO_ReadPadStatus(GPIO_Type* base, uint32_t pin)
  * @param pininterruptMode pointer to a @ref gpio_interrupt_mode_t structure
  *        that contains the interrupt mode information. 
  */
+//void GPIO_SetPinInterruptConfig(GPIO_Type* base, uint32_t pin, gpio_interrupt_mode_t pinInterruptMode)
 void GPIO_SetPinInterruptConfig(GPIO_Type* base, uint32_t pin, gpio_interrupt_mode_t pinInterruptMode);
 
 /*!

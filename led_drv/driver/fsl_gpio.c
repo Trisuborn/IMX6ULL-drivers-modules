@@ -29,6 +29,9 @@
  */
 
 #include "fsl_gpio.h"
+#include "fsl_clock.h"
+// #include "fsl_common.h"
+#include "MCIMX6Y2.h"
 
 /*******************************************************************************
  * Variables
@@ -71,7 +74,7 @@ static uint32_t GPIO_GetInstance(GPIO_Type *base)
         }
     }
 
-    assert(instance < ARRAY_SIZE(s_gpioBases));
+    // assert(instance < ARRAY_SIZE(s_gpioBases));
 
     return instance;
 }
@@ -103,7 +106,7 @@ void GPIO_PinInit(GPIO_Type* base, uint32_t pin, const gpio_pin_config_t* Config
 
 void GPIO_WritePinOutput(GPIO_Type* base, uint32_t pin, uint8_t output)
 {
-    assert(pin < 32);
+    // assert(pin < 32);
     if (output == 0U)
     {
         base->DR &= ~(1U << pin);  /* Set pin output to low level.*/

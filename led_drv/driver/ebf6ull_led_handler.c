@@ -34,12 +34,21 @@ static led_ctl_typedef ebf6ull_led_opr_s = {
 static void ebf6ull_led_init( u8 which_led )
 {
     printk( "init led%d\n", which_led );
+
+    GPIO_Type ledx_pin;
+    gpio_pin_config_t ledx_conf;
+
+    ledx_conf.direction = kGPIO_DigitalOutput;
+    ledx_conf.interruptMode = kGPIO_NoIntmode;
+    ledx_conf.outputLogic = 0;
+
+    GPIO_PinInit( GPIO5, 3, &ledx_conf );
+
 }
 
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
 {
 
-    
 }
 
 led_ctl_typedef *ebf6ull_led_opr_get(void) 

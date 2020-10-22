@@ -19,7 +19,7 @@ obj_all		= $(patsubst %.c, %.o, $(src_all))
 all:led_app
 	@ cp led_app ../
 led_app:$(src_all)
-	$(CC) $(CFLAGS) -o led_app led_app.c
+	@ $(CC) $(CFLAGS) -o led_app led_app.c
 	
 clean:
 	@ rm -rf *.o led_app ../led_app
