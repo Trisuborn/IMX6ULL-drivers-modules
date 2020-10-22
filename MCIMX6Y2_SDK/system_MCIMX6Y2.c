@@ -71,6 +71,7 @@
  */
 
 #include <stdint.h>
+#include <stddef.h>
 #include "fsl_device_registers.h"
 
 /* Transaction Drivers Handler Declaration */

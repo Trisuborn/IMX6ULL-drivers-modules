@@ -5,7 +5,7 @@ LIB_DIR  =  ./lib/
 
 TEMP 	 	=  	$(shell find . -maxdepth 4 -type d)
 TEMP 	   +=  	$(shell find ../ -maxdepth 4 -type d)
-# TEMP 	   +=  	$(shell find $(KENAL_DIR)/include -maxdepth 4 -type d)
+TEMP 	   +=  	$(shell find $(KENAL_DIR)/include -maxdepth 4 -type d)
 INC_DIR	 	=  	$(addprefix -I, $(TEMP))
 
 C_FILE 		=   $(foreach dir,$(TEMP),$(wildcard $(dir)/*.c))
@@ -36,7 +36,7 @@ bootload.elf: $(ALL_FILE)
 
 	$(MAKE) -C ./drivers
 
-	$(LD) -T MCIMX6Y2xxx08_ram.ld  -o bootload.elf  $(OUT_DIR)*o
+	$(LD) -T ./gcc/MCIMX6Y2xxx08_ram.ld  -o bootload.elf  $(OUT_DIR)*o
 
 	# -L/usr/lib/gcc-cross/arm-linux-gnueabi/9/ -lgcc
 	# $(LIB_DIR)*.a

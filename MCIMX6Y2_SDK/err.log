@@ -1,0 +1,70 @@
+In file included from /usr/arm-linux-gnueabihf/include/bits/libc-header-start.h:33,
+                 from /usr/arm-linux-gnueabihf/include/stdint.h:26,
+                 from /usr/lib/gcc-cross/arm-linux-gnueabihf/9/include/stdint.h:9,
+                 from ./system_MCIMX6Y2.c:73:
+/home/su/IMX6ULL/100ask_imx6ull-sdk/Buildroot_2019.02/output/build/linux-origin_master/include/xen/features.h:16:8: error: unknown type name ‘u8’
+   16 | extern u8 xen_features[XENFEAT_NR_SUBMAPS * 32];
+      |        ^~
+In file included from /usr/arm-linux-gnueabihf/include/stdint.h:26,
+                 from /usr/lib/gcc-cross/arm-linux-gnueabihf/9/include/stdint.h:9,
+                 from ./system_MCIMX6Y2.c:73:
+/usr/arm-linux-gnueabihf/include/bits/libc-header-start.h:56:17: error: missing binary operator before token "("
+   56 | #if __GLIBC_USE (IEC_60559_BFP_EXT) || __GLIBC_USE (ISOC2X)
+      |                 ^
+/usr/arm-linux-gnueabihf/include/bits/libc-header-start.h:73:17: error: missing binary operator before token "("
+   73 | #if __GLIBC_USE (IEC_60559_FUNCS_EXT) || __GLIBC_USE (ISOC2X)
+      |                 ^
+In file included from /usr/lib/gcc-cross/arm-linux-gnueabihf/9/include/stdint.h:9,
+                 from ./system_MCIMX6Y2.c:73:
+/usr/arm-linux-gnueabihf/include/stdint.h:276:17: error: missing binary operator before token "("
+  276 | #if __GLIBC_USE (IEC_60559_BFP_EXT_C2X)
+      |                 ^
+In file included from ./MCIMX6Y2.h:269,
+                 from ./fsl_device_registers.h:45,
+                 from ./system_MCIMX6Y2.c:75:
+./core/core_ca7.h: In function ‘MMU_Init’:
+./core/core_ca7.h:1019:3: warning: implicit declaration of function ‘memset’ [-Wimplicit-function-declaration]
+ 1019 |   memset(L1Table, 0, 4096*4);
+      |   ^~~~~~
+./core/core_ca7.h:1019:3: warning: incompatible implicit declaration of built-in function ‘memset’
+In file included from ./MCIMX6Y2.h:269,
+                 from ./fsl_device_registers.h:45,
+                 from ./system_MCIMX6Y2.c:75:
+./core/core_ca7.h:179:1: note: include ‘<string.h>’ or provide a declaration of ‘memset’
+  178 | #include "core_ca.h"                /* Core Instruction and Function Access */
+  +++ |+#include <string.h>
+  179 | 
+In file included from ./MCIMX6Y2.h:269,
+                 from ./fsl_device_registers.h:45,
+                 from ./system_MCIMX6Y2.c:75:
+./core/core_ca7.h: In function ‘MMU_GetL2Table’:
+./core/core_ca7.h:1152:23: error: ‘NULL’ undeclared (first use in this function)
+ 1152 |   uint32_t *L2Table = NULL;
+      |                       ^~~~
+In file included from ./MCIMX6Y2.h:269,
+                 from ./fsl_device_registers.h:45,
+                 from ./system_MCIMX6Y2.c:75:
+./core/core_ca7.h:179:1: note: ‘NULL’ is defined in header ‘<stddef.h>’; did you forget to ‘#include <stddef.h>’?
+  178 | #include "core_ca.h"                /* Core Instruction and Function Access */
+  +++ |+#include <stddef.h>
+  179 | 
+In file included from ./MCIMX6Y2.h:269,
+                 from ./fsl_device_registers.h:45,
+                 from ./system_MCIMX6Y2.c:75:
+./core/core_ca7.h:1152:23: note: each undeclared identifier is reported only once for each function it appears in
+ 1152 |   uint32_t *L2Table = NULL;
+      |                       ^~~~
+./system_MCIMX6Y2.c: In function ‘SystemInitIrqTable’:
+./system_MCIMX6Y2.c:294:62: error: ‘NULL’ undeclared (first use in this function)
+  294 |     SystemInstallIrqHandler((IRQn_Type)i, defaultIrqHandler, NULL);
+      |                                                              ^~~~
+./system_MCIMX6Y2.c:76:1: note: ‘NULL’ is defined in header ‘<stddef.h>’; did you forget to ‘#include <stddef.h>’?
+   75 | #include "fsl_device_registers.h"
+  +++ |+#include <stddef.h>
+   76 | 
+./system_MCIMX6Y2.c: In function ‘SystemSetupSystick’:
+./system_MCIMX6Y2.c:390:85: error: ‘NULL’ undeclared (first use in this function)
+  390 |     SystemInstallIrqHandler(GPT1_IRQn, (system_irq_handler_t)(uint32_t)tickHandler, NULL);
+      |                                                                                     ^~~~
+./system_MCIMX6Y2.c:390:85: note: ‘NULL’ is defined in header ‘<stddef.h>’; did you forget to ‘#include <stddef.h>’?
+make: *** [makefile:35: bootload.elf] Error 1

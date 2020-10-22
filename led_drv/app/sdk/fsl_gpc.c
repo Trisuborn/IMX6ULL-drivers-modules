@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2015, Freescale Semiconductor, Inc.
- * Copyright 2016-2017 NXP
+ * Copyright (c) 2016, Freescale Semiconductor, Inc.
+ * Copyright 2016 NXP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -27,42 +28,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if defined(__GNUC__)
-#include <stdio.h>
-#include <errno.h>
-#endif
 
-#if defined(__GNUC__)
-/*!
- * @brief Function to override ARMGCC default function _sbrk
- *
- * _sbrk is called by malloc. ARMGCC default _sbrk compares "SP" register and
- * heap end, if heap end is larger than "SP", then _sbrk returns error and
- * memory allocation failed. This function changes to compare __HeapLimit with
- * heap end.
- */
-typedef void* caddr_t;
- 
-caddr_t _sbrk(int incr)
+#include "fsl_gpc.h"
+
+void GPC_EnableIRQ(GPC_Type *base, uint32_t irqId)
 {
-    extern char end __asm("end");
-    extern char heap_limit __asm("__HeapLimit");
-    static char *heap_end;
-    char *prev_heap_end;
+    uint32_t irqRegNum = irqId / 32U;
+    uint32_t irqRegShiftNum = irqId % 32U;
 
-    if (heap_end == NULL)
-        heap_end = &end;
-
-    prev_heap_end = heap_end;
-
-    if ((uint32_t)heap_end + (uint32_t)incr > (uint32_t)(&heap_limit))
-    {
-        errno = ENOMEM;
-        return (caddr_t)-1;
-    }
-
-    heap_end += incr;
-
-    return (caddr_t)prev_heap_end;
+    assert(irqRegNum > 0U);
+    assert(irqRegNum <= GPC_IMR_COUNT);
+    base->IMR[irqRegNum - 1U] &= ~(1U << irqRegShiftNum);
 }
-#endif
+
+void GPC_DisableIRQ(GPC_Type *base, uint32_t irqId)
+{
+    uint32_t irqRegNum = irqId / 32U;
+    uint32_t irqRegShiftNum = irqId % 32U;
+
+    assert(irqRegNum > 0U);
+    assert(irqRegNum <= GPC_IMR_COUNT);
+    base->IMR[irqRegNum - 1U] |= (1U << irqRegShiftNum);
+}
+
+bool GPC_GetIRQStatusFlag(GPC_Type *base, uint32_t irqId)
+{
+    uint32_t irqRegNum = irqId / 32U;
+    uint32_t irqRegShiftNum = irqId % 32U;
+    bool ret;
+
+    assert(irqRegNum > 0U);
+    assert(irqRegNum <= GPC_IMR_COUNT);
+    ret = ((1U << irqRegShiftNum) == (base->ISR[irqRegNum - 1U] | (1U << irqRegShiftNum)));
+
+    return ret;
+}

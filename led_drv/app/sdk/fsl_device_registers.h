@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2015, Freescale Semiconductor, Inc.
+ * Copyright 2014-2016 Freescale Semiconductor, Inc.
  * Copyright 2016-2017 NXP
- *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
@@ -26,43 +25,35 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-#if defined(__GNUC__)
-#include <stdio.h>
-#include <errno.h>
-#endif
-
-#if defined(__GNUC__)
-/*!
- * @brief Function to override ARMGCC default function _sbrk
  *
- * _sbrk is called by malloc. ARMGCC default _sbrk compares "SP" register and
- * heap end, if heap end is larger than "SP", then _sbrk returns error and
- * memory allocation failed. This function changes to compare __HeapLimit with
- * heap end.
  */
-typedef void* caddr_t;
- 
-caddr_t _sbrk(int incr)
-{
-    extern char end __asm("end");
-    extern char heap_limit __asm("__HeapLimit");
-    static char *heap_end;
-    char *prev_heap_end;
 
-    if (heap_end == NULL)
-        heap_end = &end;
+#ifndef __FSL_DEVICE_REGISTERS_H__
+#define __FSL_DEVICE_REGISTERS_H__
 
-    prev_heap_end = heap_end;
+#define CPU_MCIMX6Y2CVM08
 
-    if ((uint32_t)heap_end + (uint32_t)incr > (uint32_t)(&heap_limit))
-    {
-        errno = ENOMEM;
-        return (caddr_t)-1;
-    }
+/*
+ * Include the cpu specific register header files.
+ *
+ * The CPU macro should be declared in the project or makefile.
+ */
+#if (defined(CPU_MCIMX6Y2CVM05) || defined(CPU_MCIMX6Y2CVM08) || defined(CPU_MCIMX6Y2DVM05) || \
+    defined(CPU_MCIMX6Y2DVM09))
 
-    heap_end += incr;
+#define MCIMX6Y2_SERIES
 
-    return (caddr_t)prev_heap_end;
-}
+/* CMSIS-style register definitions */
+#include "MCIMX6Y2.h"
+/* CPU specific feature definitions */
+#include "MCIMX6Y2_features.h"
+
+#else
+    #error "No valid CPU defined!"
 #endif
+
+#endif /* __FSL_DEVICE_REGISTERS_H__ */
+
+/*******************************************************************************
+ * EOF
+ ******************************************************************************/

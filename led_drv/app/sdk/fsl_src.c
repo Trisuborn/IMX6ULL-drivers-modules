@@ -1,6 +1,7 @@
 /*
- * Copyright 2014-2016 Freescale Semiconductor, Inc.
+ * Copyright (c) 2016, Freescale Semiconductor, Inc.
  * Copyright 2016-2017 NXP
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
@@ -25,33 +26,35 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-#ifndef __FSL_DEVICE_REGISTERS_H__
-#define __FSL_DEVICE_REGISTERS_H__
-
-/*
- * Include the cpu specific register header files.
- *
- * The CPU macro should be declared in the project or makefile.
- */
-#if (defined(CPU_MCIMX6Y2CVM05) || defined(CPU_MCIMX6Y2CVM08) || defined(CPU_MCIMX6Y2DVM05) || \
-    defined(CPU_MCIMX6Y2DVM09))
-
-#define MCIMX6Y2_SERIES
-
-/* CMSIS-style register definitions */
-#include "MCIMX6Y2.h"
-/* CPU specific feature definitions */
-#include "MCIMX6Y2_features.h"
-
-#else
-    #error "No valid CPU defined!"
-#endif
-
-#endif /* __FSL_DEVICE_REGISTERS_H__ */
+#include "fsl_src.h"
 
 /*******************************************************************************
- * EOF
+ * Prototypes
  ******************************************************************************/
+
+/*******************************************************************************
+ * Variables
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Code
+ ******************************************************************************/
+
+void SRC_ClearResetStatusFlags(SRC_Type *base, uint32_t flags)
+{
+    uint32_t tmp32 = base->SRSR;
+
+    if (0U != (SRC_SRSR_TSR_MASK & flags))
+    {
+        tmp32 &= ~SRC_SRSR_TSR_MASK; /* Write 0 to clear. */
+    }
+
+    if (0U != (SRC_SRSR_W1C_BITS_MASK & flags))
+    {
+        tmp32 |= (SRC_SRSR_W1C_BITS_MASK & flags); /* Write 1 to clear. */
+    }
+
+    base->SRSR = tmp32;
+}
