@@ -15,16 +15,24 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h> 
+
+typedef enum LED_OPT_DEF {
+    LED_OPT_OFF    = '0',
+    LED_OPT_ON     = '1',
+    LED_OPT_PWM    = '2',
+} LED_OPT_DEF;
 
 static char def_led[] = "LED_D7";
 static char def_opt[] = "off";
 static char path_prefix[20] = "/dev/";
 
 typedef struct {
-    int          param_num;
-    char         ledx[8];
-    char         ledx_opt[4];
+    int     param_num;
+    char    ledx[8];
+    char    ledx_opt[4];
+    char    ledx_pwm_param[20];
 } cmd_s;
 static cmd_s input_cmd;
 
@@ -33,6 +41,15 @@ typedef enum LED_STAT {
     LED_IS_ON       ,
     LED_IS_ERR      ,
 } LED_STAT;
+
+typedef struct {
+    unsigned char header;
+    unsigned char *pwm_freq;       // unit: kHz
+} pwm_param_s;
+pwm_param_s pwm_param = {
+    .header     = LED_OPT_PWM,
+    .pwm_freq   = "100",
+};
 
 LED_STAT get_led_status( void )
 {
@@ -58,6 +75,7 @@ LED_STAT get_led_status( void )
 
 int analysis_cmd( void ) 
 {
+
     if ( input_cmd.param_num < 2 )
         strcpy( input_cmd.ledx, def_led );
     if ( input_cmd.param_num < 3 )
@@ -85,9 +103,30 @@ int analysis_cmd( void )
     return 0;
 }
 
+void led_set_pwm( void ) 
+{
+    int fd = 0;
+    strcat( path_prefix, input_cmd.ledx );
+    fd = open( path_prefix, O_RDWR );
+    if ( fd == -1 ) {
+        printf( "open %s error.\n", input_cmd.ledx );
+        return;
+    }
+
+    unsigned char pwm_param_size = strlen(input_cmd.ledx_pwm_param)+1;
+    unsigned char* param_buf = (unsigned char*)malloc( pwm_param_size*sizeof(unsigned char) );
+
+    *param_buf = LED_OPT_PWM;
+    strcat( param_buf, input_cmd.ledx_pwm_param );
+    write(fd, param_buf, pwm_param_size);
+    close( fd );
+}
+
 int main( int argc, char **args )
 {
     input_cmd.param_num = argc;
+    if ( input_cmd.param_num > 4 )
+        return -1;
     if ( input_cmd.param_num >= 2 ){
         if ( !strcmp(args[1], "-h") || (!strcmp( args[1], "-help" )) ) {
             printf( "Usage_1: ./led_app {LED_D4...LED_D7} {on | off}\n" );
@@ -99,6 +138,12 @@ int main( int argc, char **args )
     if ( input_cmd.param_num >= 3 ) {
         if ( !strcmp(args[2], "stat") ) {
             return get_led_status();
+        }
+        if ( !strcmp(args[2], "pwm") ) {
+            if ( input_cmd.param_num == 4 )
+                strcpy( input_cmd.ledx_pwm_param, args[3] );
+            led_set_pwm();
+            return 0;
         }
         strcpy( input_cmd.ledx_opt, args[2] );
     }

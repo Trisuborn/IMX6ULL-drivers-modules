@@ -84,11 +84,18 @@ static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t 
 {
     struct inode * inode = file_inode( file );
     u8 ledx = iminor( inode );
-    char opt  = 0;
+    u8 opt  = 0;
+    u8 param_buf[20]= {0};       // temp buffer
     unsigned long err;
 
     err = copy_from_user( &opt, ubuf, 1 );
-    led_opr_p->ctl( ledx, opt );
+    
+    if ( (LED_OPT_ON == opt) || ( (LED_OPT_OFF == opt) ) )
+        led_opr_p->ctl( ledx, opt );
+    else if ( LED_OPT_PWM == (opt-0x30) ) {     // 传入字符，转换成十进制数
+        err = copy_from_user( param_buf, ubuf, 20 );
+        led_opr_p->pwm_init( ledx, &param_buf[1] );
+    }
     return 1;
 }
 
@@ -122,11 +129,8 @@ static int __init led_drv_init(void)
 		return -1;
 	}
 
-    printk( "*********************%s line %d get led_opr_p\n", __FUNCTION__, __LINE__ );
     led_opr_p = ebf6ull_led_opr_get();
     led_opr_p->s_init();
-    printk( "*********************%s line %d get led_opr_p done\n", __FUNCTION__, __LINE__ );
-    
 
     for ( i = 0; i < LED_NUM; i++ )
         device_create(led_drv_class, NULL, MKDEV(major, i), NULL, "LED_D%d", i+4); 

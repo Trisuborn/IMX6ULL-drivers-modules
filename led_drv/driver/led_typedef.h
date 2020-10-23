@@ -12,8 +12,8 @@
 #define LED_NUM     4
 
 typedef enum LED_OPT_DEF {
-    LED_OPT_LOW    = 0,
-    LED_OPT_HIGH      ,
+    LED_OPT_OFF    = 0,
+    LED_OPT_ON        ,
     LED_OPT_PWM       ,
 } LED_OPT_DEF;
 
@@ -53,6 +53,8 @@ typedef struct led_ctl_typedef{
     void (*ctl)     ( u8 which_led, LED_OPT_DEF opt );
     u8   (*g_stat)  ( u8 which_led );
     void (*s_init)  ( void );
+    void (*pwm_init) ( u8 which_led, u32 pwm_freq );
+    void (*pwm_ctl) ( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
 } led_ctl_typedef;
 
 #endif // !__LED_TYPEDEF_H__

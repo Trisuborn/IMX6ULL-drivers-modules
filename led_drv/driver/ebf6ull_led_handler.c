@@ -27,16 +27,18 @@ static void ebf6ull_led_init( u8 which_led );
 static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt );
 static u8 ebf6ull_led_get_stat ( u8 which_led );
 
-static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq, u8 opt );
-static void ebf6ull_led_pwm_opt( u8 which_led, LED_PWM_OPT_DEF opt );
+static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq );
+static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
 
 static led_property_typedef ebf6ull_ledx[LED_NUM];
 
 static led_ctl_typedef ebf6ull_led_opr_s = {
-    .init   = ebf6ull_led_init,
-    .ctl    = ebf6ull_led_ctl,
-    .g_stat = ebf6ull_led_get_stat,
-    .s_init = ebf6ull_led_struct_init,
+    .init       = ebf6ull_led_init,
+    .ctl        = ebf6ull_led_ctl,
+    .g_stat     = ebf6ull_led_get_stat,
+    .s_init     = ebf6ull_led_struct_init,
+    .pwm_init   = ebf6ull_led_pwm_init,
+    .pwm_ctl    = ebf6ull_led_pwm_ctl,
 };
 
 static void ebf6ull_led_struct_init ( void )
@@ -51,13 +53,10 @@ static void ebf6ull_led_struct_init ( void )
 
 static void ebf6ull_led_init( u8 which_led )
 {
-    // ebf6ull_ledx[which_led].reg.REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x6C), 4 );
-    // printk( "**********************%x***************\n", (__IO u32 *)ioremap( (CCM_BASE + 0x6C), 4 ) );
+
     /* 检查是否配置过led引脚 */
     if ( ebf6ull_ledx[which_led].conf_status )
         return;
-
-    printk( "ebf6ull_led_init\n" );
 
     switch ( which_led ) {
     case LED_D4:     // EBF6ULL的 LED_D4
@@ -109,11 +108,6 @@ static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt )
 {
     u32 pin_oft = 0;
 
-    if ( opt == LED_OPT_PWM ) {
-        ebf6ull_led_pwm_init( which_led, 100, opt );
-        return;
-    }
-
     /* 引脚偏移 */
     switch (which_led) {
     case LED_D4:
@@ -134,10 +128,10 @@ static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt )
     }
 
     /* LED 负极拉低时 LED电亮 */
-    if ( opt == LED_OPT_HIGH ) {
+    if ( opt == LED_OPT_ON ) {
         *ebf6ull_ledx[which_led].reg.REMAP_GPIOx_DR &=~ pin_oft;
         ebf6ull_ledx[which_led].status = 1;
-    } else if ( opt == LED_OPT_LOW ) {
+    } else if ( opt == LED_OPT_OFF ) {
         *ebf6ull_ledx[which_led].reg.REMAP_GPIOx_DR |=  pin_oft;
         ebf6ull_ledx[which_led].status = 0;
     }
@@ -149,13 +143,19 @@ static u8 ebf6ull_led_get_stat ( u8 which_led )
     return ebf6ull_ledx[which_led].status;
 }
 
-
-static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq, u8 opt )
+/************************************************
+ * @brief 
+ * 
+ * @param which_led 
+ * @param pwm_freq 
+ * @param opt 
+ ************************************************/
+static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq )
 {
-    ebf6ull_led_pwm_opt( which_led, opt );
+    printk( "led%d into pwm mode. \npwm_freq:(%d)\n", which_led+4, pwm_freq );
 }
 
-static void ebf6ull_led_pwm_opt( u8 which_led, LED_PWM_OPT_DEF opt )
+static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt )
 {
 
 }
