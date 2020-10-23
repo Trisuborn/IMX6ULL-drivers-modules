@@ -53,11 +53,6 @@ MODULE_DESCRIPTION( "led driver." );
 MODULE_LICENSE("GPL");
 
 /************************
- * @brief define
- ************************/
-#define LED_NUM     4
-
-/************************
  * @brief static var
  ************************/
 static u8 major = 0;
@@ -74,8 +69,15 @@ struct file_operations led_fopt = {
 
 static ssize_t led_drv_read (struct file *file, char __user * ubuf, size_t size, loff_t *off) 
 {
-    printk( "read  size: %d\n", size );
-    return size;
+    unsigned long err;
+    struct inode * inode = file_inode( file );
+    u8 ledx = iminor( inode );
+    int ledx_stat = -1;
+
+    ledx_stat = led_opr_p->g_stat( ledx );
+    err = copy_to_user( ubuf, &ledx_stat, 1 );
+
+    return 1;
 }
 
 static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t size, loff_t *off) 

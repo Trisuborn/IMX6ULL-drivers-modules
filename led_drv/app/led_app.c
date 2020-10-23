@@ -28,6 +28,34 @@ typedef struct {
 } cmd_s;
 static cmd_s input_cmd;
 
+typedef enum LED_STAT {
+    LED_IS_OFF   = 0,
+    LED_IS_ON       ,
+    LED_IS_ERR      ,
+} LED_STAT;
+
+LED_STAT get_led_status( void )
+{
+    int fd = -1;
+    strcat( path_prefix, input_cmd.ledx );
+    fd = open( path_prefix, O_RDONLY );
+    if ( fd == -1 )
+        return -1;
+    
+    LED_STAT status = LED_IS_ERR;
+    read( fd, &status, 1 );
+    close(fd);
+
+    if ( status == LED_IS_ON ) 
+        printf( "%s is on.\n", input_cmd.ledx );
+    if ( status == LED_IS_OFF ) 
+        printf( "%s is off.\n", input_cmd.ledx );
+    else if ( status == LED_IS_ERR )
+        printf( "%s status(%d) get error.\n", input_cmd.ledx, status );
+
+    return status;
+}
+
 int analysis_cmd( void ) 
 {
     if ( input_cmd.param_num < 2 )
@@ -62,13 +90,18 @@ int main( int argc, char **args )
     input_cmd.param_num = argc;
     if ( input_cmd.param_num >= 2 ){
         if ( !strcmp(args[1], "-h") || (!strcmp( args[1], "-help" )) ) {
-            printf( "Usage: ./led_app {LED_D4...LED_D7} {on | off}\n" );
+            printf( "Usage_1: ./led_app {LED_D4...LED_D7} {on | off}\n" );
+            printf( "Usage_2: ./led_app {LED_D4...LED_D7} stat\n" );
             return 0;
         }
         strcpy( input_cmd.ledx, args[1] );
     }
-    if ( input_cmd.param_num >= 3 )
+    if ( input_cmd.param_num >= 3 ) {
+        if ( !strcmp(args[2], "stat") ) {
+            return get_led_status();
+        }
         strcpy( input_cmd.ledx_opt, args[2] );
+    }
 
     return analysis_cmd();
 }

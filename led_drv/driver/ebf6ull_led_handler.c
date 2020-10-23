@@ -23,22 +23,31 @@
 #include "led_typedef.h"
 
 static void ebf6ull_led_init( u8 which_led );
+static void ebf6ull_led_deinit ( u8 which_led );
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt );
-
+static u8 ebf6ull_led_get_stat ( u8 which_led );
 
 __IO static u32 *REMAP_CCM_CCGRx    = NULL;
 __IO static u32 *REMAP_GPIOx_PIN    = NULL;
 __IO static u32 *REMAP_GPIOx_DR     = NULL;
 __IO static u32 *REMAP_GPIOx_GDIR   = NULL;
 
-
+/* LED 状态 BUF */
+static u8 led_status_buf[LED_NUM] = {0};
+/* LED 配置状态 BUF */
+static u8 led_conf_status_buf[LED_NUM] = {0};
 static led_ctl_typedef ebf6ull_led_opr_s = {
     .init   = ebf6ull_led_init,
+    .deinit = ebf6ull_led_deinit,
     .ctl    = ebf6ull_led_ctl,
+    .g_stat = ebf6ull_led_get_stat,
 };
 
 static void ebf6ull_led_init( u8 which_led )
 {
+    /* 检查是否配置过led引脚 */
+    if ( led_conf_status_buf[which_led] )
+        return;
     switch ( which_led ) {
     case LED_D4:     // EBF6ULL的 LED_D4
         REMAP_CCM_CCGRx   = (__IO u32 *)ioremap( (CCM_BASE + 0x6C)         , 4 );
@@ -81,14 +90,14 @@ static void ebf6ull_led_init( u8 which_led )
         return;
     }
 
+    led_conf_status_buf[which_led] = 1;
+
     printk( "init led%d done.\n", which_led );
 }
 
 static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
 {
     u32 pin_oft = 0;
-
-    printk( "LED_D%d status: %d\n", which_led, opt );
 
     /* 引脚偏移 */
     switch (which_led) {
@@ -110,10 +119,55 @@ static void ebf6ull_led_ctl ( u8 which_led, u8 opt )
     }
 
     /* LED 负极拉低时 LED电亮 */
-    if ( opt )
+    if ( opt ) {
         *REMAP_GPIOx_DR &=~ pin_oft;
-    else
+        led_status_buf[which_led] = 1;
+    } else {
         *REMAP_GPIOx_DR |=  pin_oft;
+        led_status_buf[which_led] = 0;
+    }
+}
+
+static u8 ebf6ull_led_get_stat ( u8 which_led )
+{
+    printk( "led_status_buf: %d\n ", led_status_buf[which_led] );
+    return led_status_buf[which_led];
+}
+
+/************************
+ * @brief led_deinit
+ * 
+ * @param which_led 
+ ************************/
+static void ebf6ull_led_deinit ( u8 which_led )
+{
+
+    u32 clk_oft = 0;
+
+    led_conf_status_buf[which_led] = 0;
+
+    switch (which_led) {
+    case LED_D4:
+        clk_oft = (3 << 26);
+        break;
+    case LED_D5:
+    case LED_D6:
+        clk_oft = (3 << 12);
+        break;
+    case LED_D7:
+        clk_oft = (3 << 30);
+        break;
+        
+    default:
+        break;
+    }
+
+    *REMAP_CCM_CCGRx    &=~ clk_oft;
+
+    REMAP_CCM_CCGRx    = NULL;
+    REMAP_GPIOx_PIN    = NULL;
+    REMAP_GPIOx_DR     = NULL;
+    REMAP_GPIOx_GDIR   = NULL;
 }
 
 led_ctl_typedef *ebf6ull_led_opr_get(void) 

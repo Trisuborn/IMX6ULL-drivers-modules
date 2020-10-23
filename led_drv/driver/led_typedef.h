@@ -8,9 +8,16 @@ static ebf6ull_led_ctl ( u8 which_led, u8 opt );
 */
 #include <asm-generic/int-ll64.h>
 
+/************************
+ * @brief define
+ ************************/
+#define LED_NUM     4
+
 typedef struct led_ctl_typedef{
     void (*init)    ( u8 which_led );
-    void (*ctl)     ( u8 which_led, u8 opt );    
+    void (*deinit)  ( u8 which_led );
+    void (*ctl)     ( u8 which_led, u8 opt );
+    u8   (*g_stat)  ( u8 which_led );
 } led_ctl_typedef;
 
 typedef enum LED_Dx{
