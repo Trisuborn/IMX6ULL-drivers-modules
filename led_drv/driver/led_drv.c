@@ -122,7 +122,11 @@ static int __init led_drv_init(void)
 		return -1;
 	}
 
+    printk( "*********************%s line %d get led_opr_p\n", __FUNCTION__, __LINE__ );
     led_opr_p = ebf6ull_led_opr_get();
+    led_opr_p->s_init();
+    printk( "*********************%s line %d get led_opr_p done\n", __FUNCTION__, __LINE__ );
+    
 
     for ( i = 0; i < LED_NUM; i++ )
         device_create(led_drv_class, NULL, MKDEV(major, i), NULL, "LED_D%d", i+4); 
