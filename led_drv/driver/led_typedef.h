@@ -47,13 +47,13 @@ typedef struct {
 } led_property_typedef;
 
 
-typedef struct led_ctl_typedef{
-    void (*init)    ( u8 which_led );
-    void (*ctl)     ( u8 which_led, LED_OPT_DEF opt );
-    u8   (*g_stat)  ( u8 which_led );
-    void (*s_init)  ( void );
+typedef struct {
+    void (*init)     ( u8 which_led );
+    void (*ctl)      ( u8 which_led, LED_OPT_DEF opt );
+    u8   (*g_stat)   ( u8 which_led );
+    void (*s_init)   ( void );
     void (*pwm_init) ( u8 which_led, u32 pwm_freq );
-    void (*pwm_ctl) ( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
+    void (*pwm_ctl)  ( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
 } led_ctl_typedef;
 
 #endif // !__LED_TYPEDEF_H__

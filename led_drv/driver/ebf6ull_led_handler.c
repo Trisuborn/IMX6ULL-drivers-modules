@@ -53,10 +53,7 @@ static void ebf6ull_led_struct_init ( void )
         ledx[i].status = 0;
         ledx[i].conf_status = 0;
     }
-}
 
-static void ebf6ull_led_init( u8 which_led )
-{
     if ( REMAP_CCM == NULL ) {
         REMAP_CCM   = (CCM_Type *) ioremap( (u32)CCM  , sizeof( CCM_Type  ) );
         REMAP_GPIO1 = (GPIO_Type *)ioremap( (u32)GPIO1, sizeof( GPIO_Type ) );
@@ -64,8 +61,11 @@ static void ebf6ull_led_init( u8 which_led )
         REMAP_GPIO5 = (GPIO_Type *)ioremap( (u32)GPIO5, sizeof( GPIO_Type ) );
     }
 
-    printk( "error led REMAP.\n" );
-    
+}
+
+static void ebf6ull_led_init( u8 which_led )
+{
+
     /* 检查是否配置过led引脚 */
     if ( ledx[which_led].conf_status )
         return;
@@ -117,7 +117,7 @@ static void ebf6ull_led_init( u8 which_led )
     ledx[which_led].reg.REMAP_GPIOx->GDIR   |= 1 << ledx[which_led].oft;
 
     ledx[which_led].conf_status = 1;
-    printk( "error led config done.\n" );
+
 }
 
 static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt )
