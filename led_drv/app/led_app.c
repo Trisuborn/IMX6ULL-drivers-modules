@@ -18,12 +18,6 @@
 #include <stdlib.h>
 #include <string.h> 
 
-typedef enum LED_OPT_DEF {
-    LED_OPT_OFF    = '0',
-    LED_OPT_ON     = '1',
-    LED_OPT_PWM    = '2',
-} LED_OPT_DEF;
-
 static char def_led[] = "LED_D7";
 static char def_opt[] = "off";
 static char path_prefix[20] = "/dev/";
@@ -32,7 +26,7 @@ typedef struct {
     int     param_num;
     char    ledx[8];
     char    ledx_opt[4];
-    char    ledx_pwm_param[20];
+    char    ledx_pwm_param;
 } cmd_s;
 static cmd_s input_cmd;
 
@@ -42,13 +36,25 @@ typedef enum LED_STAT {
     LED_IS_ERR      ,
 } LED_STAT;
 
+typedef enum LED_OPT_DEF {
+    LED_OPT_OFF    = '0',
+    LED_OPT_ON     = '1',
+    LED_OPT_PWM    = '2',
+} LED_OPT_DEF;
+
+typedef enum {
+    PWM_FREQ_32K   = '0',
+    PWM_FREQ_100K  = '1',
+    PWM_FREQ_200K  = '2',
+} PWM_FREQ;
+
 typedef struct {
     unsigned char header;
-    unsigned char *pwm_freq;       // unit: kHz
+    unsigned char pwm_freq;       // unit: kHz
 } pwm_param_s;
 pwm_param_s pwm_param = {
     .header     = LED_OPT_PWM,
-    .pwm_freq   = "100",
+    .pwm_freq   = PWM_FREQ_100K,
 };
 
 LED_STAT get_led_status( void )
@@ -113,12 +119,10 @@ void led_set_pwm( void )
         return;
     }
 
-    unsigned char pwm_param_size = strlen(input_cmd.ledx_pwm_param)+1;
-    unsigned char* param_buf = (unsigned char*)malloc( pwm_param_size*sizeof(unsigned char) );
-
-    *param_buf = LED_OPT_PWM;
-    strcat( param_buf, input_cmd.ledx_pwm_param );
-    write(fd, param_buf, pwm_param_size);
+    unsigned char param_buf[2];
+    param_buf[0] = LED_OPT_PWM;
+    param_buf[1] = input_cmd.ledx_pwm_param;
+    write(fd, param_buf, 2);
     close( fd );
 }
 
@@ -141,7 +145,9 @@ int main( int argc, char **args )
         }
         if ( !strcmp(args[2], "pwm") ) {
             if ( input_cmd.param_num == 4 )
-                strcpy( input_cmd.ledx_pwm_param, args[3] );
+                input_cmd.ledx_pwm_param = *args[3];
+            else 
+                input_cmd.ledx_pwm_param = PWM_FREQ_100K;
             led_set_pwm();
             return 0;
         }
