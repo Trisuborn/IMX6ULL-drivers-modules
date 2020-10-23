@@ -10,7 +10,7 @@ src_all		= $(wildcard *.c)
 obj_all		= $(patsubst %.c, %.o, $(src_all))
 
 # pwm_drv-y := pwm_handler_ebf6ull.o 
-pwm_drv-y += pwm_drv.o
+pwm_drv_ebf6ull-y += pwm_drv.o
 # pwm_drv-y += uldivmod.o
 obj-m   += pwm_drv_ebf6ull.o
 

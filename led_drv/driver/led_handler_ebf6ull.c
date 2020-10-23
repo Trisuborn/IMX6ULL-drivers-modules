@@ -21,6 +21,7 @@
  ************************/
 #include "common_inc.h"
 #include "led_typedef.h"
+#include "led_handler_ebf6ull.h"
 
 static void ebf6ull_led_struct_init ( void );
 static void ebf6ull_led_init( u8 which_led );

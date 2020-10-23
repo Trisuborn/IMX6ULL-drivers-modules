@@ -2,7 +2,7 @@
 /************************
  * @file pwm_drv.c
  * @author Trisuborn (ttowfive@gmail.com)
- * @brief led's driver code
+ * @brief pwm's driver code
  * @version 0.1
  * @date 2020-10-21
  * 
@@ -57,6 +57,7 @@ static u8 major = 0;
 static u8 mod_name[] = "pwm_mod";
 static struct class *pwm_drv_class;
 static led_ctl_typedef *led_opr_p;
+
 struct file_operations pwm_fopt = {
     .owner      = THIS_MODULE,
     .read       = pwm_drv_read,
@@ -68,14 +69,6 @@ struct file_operations pwm_fopt = {
 static ssize_t pwm_drv_read (struct file *file, char __user * ubuf, size_t size, loff_t *off) 
 {
 
-    unsigned long err;
-    struct inode * inode = file_inode( file );
-    u8 ledx = iminor( inode );
-    int ledx_stat = -1;
-
-    ledx_stat = led_opr_p->g_stat( ledx );
-    err = copy_to_user( ubuf, &ledx_stat, 1 );
-
     return 1;
 }
 
@@ -83,34 +76,19 @@ static ssize_t pwm_drv_read (struct file *file, char __user * ubuf, size_t size,
 
 static ssize_t pwm_drv_writ (struct file *file, const char __user *ubuf, size_t size, loff_t *off) 
 {
-    struct inode * inode = file_inode( file );
-    u8 ledx = iminor( inode );
-    u8 opt  = 0;
-    u8 pwm_freq;       // temp buffer
-    unsigned long err;
 
-    err = copy_from_user( &opt, ubuf, 1 );
-    /* 判断普通模式还是PWM模式 */
-    if ( (LED_OPT_ON == opt) || ( (LED_OPT_OFF == opt) ) )
-        led_opr_p->ctl( ledx, opt );
-    else if ( LED_OPT_PWM == chrti(opt) ) {     // 传入字符，转换成十进制数
-        err = copy_from_user( &pwm_freq, ubuf+1, 1 );
-        led_opr_p->pwm_init( ledx, chrti(pwm_freq) );
-        printk( "ledx:%d pwm_freq:%d", ledx, pwm_freq );
-    }
     return 1;
 }
  
 static int pwm_drv_open (struct inode *inode, struct file *file) 
 {
-    u8 ledx = iminor( inode );
-    led_opr_p->init( ledx );
+
     return 0;
 }
 
 static int pwm_drv_release (struct inode *inode, struct file *file) 
 {
-    u8 ledx = iminor( inode );
+
     return 0;
 }
 
@@ -130,9 +108,6 @@ static int __init pwm_drv_init(void)
         unregister_chrdev( major, mod_name );
 		return -1;
 	}
-
-    led_opr_p = ebf6ull_led_opr_get();
-    led_opr_p->s_init();
 
     for ( i = 0; i < LED_NUM; i++ )
         device_create(pwm_drv_class, NULL, MKDEV(major, i), NULL, "LED_D%d", i+4); 
