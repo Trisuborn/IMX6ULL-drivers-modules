@@ -67,23 +67,6 @@ struct file_operations led_fopt = {
     .release    = led_drv_release,
 };
 
-u8 *chr_buf[] = { '0', '1', '2','3', '4', '5', '6', '7', '8', '9' };
-void str_to_int( u8 *str )
-{
-    u8 len = 0;
-    u8 *p_s = str;
-
-    while ( *p_s++ != '\0' ) {
-        len++;
-    }
-
-    printk( "len %d\n", len );
-
-    // p_s = str;
-    // while (  )
-
-}
-
 static ssize_t led_drv_read (struct file *file, char __user * ubuf, size_t size, loff_t *off) 
 {
     unsigned long err;
@@ -97,6 +80,8 @@ static ssize_t led_drv_read (struct file *file, char __user * ubuf, size_t size,
     return 1;
 }
 
+
+
 static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t size, loff_t *off) 
 {
     struct inode * inode = file_inode( file );
@@ -109,14 +94,14 @@ static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t 
     /* 判断普通模式还是PWM模式 */
     if ( (LED_OPT_ON == opt) || ( (LED_OPT_OFF == opt) ) )
         led_opr_p->ctl( ledx, opt );
-    else if ( LED_OPT_PWM == (opt-0x30) ) {     // 传入字符，转换成十进制数
+    else if ( LED_OPT_PWM == chrti(opt) ) {     // 传入字符，转换成十进制数
         err = copy_from_user( &pwm_freq, ubuf+1, 1 );
-        led_opr_p->pwm_init( ledx, (pwm_freq-0x30) );
+        led_opr_p->pwm_init( ledx, chrti(pwm_freq) );
         printk( "ledx:%d pwm_freq:%d", ledx, pwm_freq );
     }
     return 1;
 }
-
+ 
 static int led_drv_open (struct inode *inode, struct file *file) 
 {
     u8 ledx = iminor( inode );

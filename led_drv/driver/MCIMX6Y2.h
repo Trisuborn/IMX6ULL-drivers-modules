@@ -75,7 +75,7 @@
 /** Memory map minor version */
 #define MCU_MEM_MAP_VERSION_MINOR 0x0000U
 
-
+#define chrti( x )       ( x-0x30 )
 
 /* ----------------------------------------------------------------------------
    -- Interrupt vector numbers
@@ -270,32 +270,6 @@ typedef enum IRQn {
 // #include "system_MCIMX6Y2.h"           /* Device specific configuration file */
 #include "basetype.h"
 
-/*! @name Min/max macros */
-/* @{ */
-#if !defined(MIN)
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#endif
-
-#if !defined(MAX)
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#endif
-/* @} */
-
-/*! @brief Computes the number of elements in an array. */
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-#endif
-
-/*! @name UINT16_MAX/UINT32_MAX value */
-/* @{ */
-#if !defined(UINT16_MAX)
-#define UINT16_MAX ((uint16_t)-1)
-#endif
-
-#if !defined(UINT32_MAX)
-#define UINT32_MAX ((uint32_t)-1)
-#endif
-
 /*!
  * @}
  */ /* end of group Cortex_Core_Configuration */
@@ -304,7 +278,7 @@ typedef enum IRQn {
 /* ----------------------------------------------------------------------------
    -- Mapping Information
    ---------------------------------------------------------------------------- */
-
+ 
 /*!
  * @addtogroup Mapping_Information Mapping Information
  * @{

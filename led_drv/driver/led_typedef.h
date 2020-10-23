@@ -33,17 +33,15 @@ typedef enum LED_Dx{
  * @brief LED class typedef
  ************************/
 typedef struct {
-    __IO u32 *REMAP_CCM_CCGRx  ;
-    __IO u32 *REMAP_GPIOx_PIN  ;
-    __IO u32 *REMAP_GPIOx_DR   ;
-    __IO u32 *REMAP_GPIOx_GDIR ;
+    /* GPIO */
+    __IO u32  *REMAP_CCM_CCGRx ;
+    GPIO_Type *REMAP_GPIOx     ;
 } led_reg_typedef;
 
-typedef struct led_property_typedef{
-    u8 num;
-    u8 status;
-    u8 conf_status;
-    u8 reserve;
+typedef struct {
+    u8  status;
+    u8  conf_status;
+    u16 reserve;
     led_reg_typedef reg;
 } led_property_typedef;
 
