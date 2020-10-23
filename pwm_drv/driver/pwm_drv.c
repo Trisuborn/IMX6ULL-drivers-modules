@@ -30,6 +30,8 @@
  * @brief user header files
  ************************/
 
+#define PWM_NUM     8
+
 /**
  * @brief functions declare
  */
@@ -56,7 +58,7 @@ MODULE_LICENSE("GPL");
 static u8 major = 0;
 static u8 mod_name[] = "pwm_mod";
 static struct class *pwm_drv_class;
-static led_ctl_typedef *led_opr_p;
+// static led_ctl_typedef *led_opr_p;
 
 struct file_operations pwm_fopt = {
     .owner      = THIS_MODULE,
@@ -101,7 +103,7 @@ static int __init pwm_drv_init(void)
 
     major = register_chrdev( 0, mod_name, &pwm_fopt );
 
-    pwm_drv_class = class_create(THIS_MODULE, "led_class");
+    pwm_drv_class = class_create(THIS_MODULE, "pwm_class");
 	if (IS_ERR(pwm_drv_class)) {
         printk( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
 		res = PTR_ERR(pwm_drv_class);
@@ -109,7 +111,7 @@ static int __init pwm_drv_init(void)
 		return -1;
 	}
 
-    for ( i = 0; i < LED_NUM; i++ )
+    for ( i = 0; i < PWM_NUM; i++ )
         device_create(pwm_drv_class, NULL, MKDEV(major, i), NULL, "LED_D%d", i+4); 
 
     return 0;
@@ -120,7 +122,7 @@ static void __exit pwm_drv_exit(void)
     u8 i;
     printk( "%s line %d\n", __FUNCTION__, __LINE__ );
     
-    for ( i = 0; i < LED_NUM; i++ )
+    for ( i = 0; i < PWM_NUM; i++ )
         device_destroy(pwm_drv_class, MKDEV(major, i));
     
     class_destroy(pwm_drv_class);

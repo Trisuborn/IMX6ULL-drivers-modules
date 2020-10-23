@@ -1,6 +1,4 @@
 
-
-#include "ebf6ull_led_handler.h"
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/ioctl.h>
@@ -15,6 +13,7 @@
 #include <linux/of.h>
 #include <linux/cdev.h>
 #include <asm/io.h>
+#include <linux/platform_device.h>
 
 /************************
  * @brief user's includes
@@ -61,7 +60,6 @@ static void ebf6ull_led_struct_init ( void )
         REMAP_GPIO4 = (GPIO_Type *)ioremap( (u32)GPIO4, sizeof( GPIO_Type ) );
         REMAP_GPIO5 = (GPIO_Type *)ioremap( (u32)GPIO5, sizeof( GPIO_Type ) );
     }
-
 }
 
 static void ebf6ull_led_init( u8 which_led )
