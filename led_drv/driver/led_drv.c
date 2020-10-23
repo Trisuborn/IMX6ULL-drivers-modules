@@ -69,6 +69,7 @@ struct file_operations led_fopt = {
 
 static ssize_t led_drv_read (struct file *file, char __user * ubuf, size_t size, loff_t *off) 
 {
+
     unsigned long err;
     struct inode * inode = file_inode( file );
     u8 ledx = iminor( inode );
