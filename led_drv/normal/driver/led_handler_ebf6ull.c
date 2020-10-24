@@ -18,7 +18,7 @@
 /************************
  * @brief user's includes
  ************************/
-#include "common_inc.h"
+#include "imx6ull_common_inc.h"
 #include "led_typedef.h"
 #include "led_handler_ebf6ull.h"
 

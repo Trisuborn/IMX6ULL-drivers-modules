@@ -3,7 +3,7 @@
 #define __LED_TYPEDEF_H__
 
 
-#include "common_inc.h"
+#include "imx6ull_common_inc.h"
 #include <asm-generic/int-ll64.h>
 
 /************************

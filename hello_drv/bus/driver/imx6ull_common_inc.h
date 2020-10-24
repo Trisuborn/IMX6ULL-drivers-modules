@@ -13,7 +13,7 @@
 #define COMMON_H
 
 #include "MCIMX6Y2.h"
+#include "basetype.h"
 #include "fsl_iomuxc.h"
-
 
 #endif // !COMMON_H

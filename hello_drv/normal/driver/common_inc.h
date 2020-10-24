@@ -1,5 +1,5 @@
 /************************
- * @file common_inc.h
+ * @file imx6ull_common_inc.h
  * @author Trisuborn (you@domain.com)
  * @brief 
  * @version 0.1
