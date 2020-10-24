@@ -40,13 +40,13 @@
  ************************************************/
 static void led_dev_release(struct device *dev);
 static int __init led_dev_init( void );
-static int __exit led_dev_exit( void );
+static void __exit led_dev_exit( void );
 
 /************************************************
  * @brief module config
  ************************************************/
 module_init( led_dev_init );
-module_init( led_dev_exit );
+module_exit( led_dev_exit );
 MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>  Github: https://github.com/Trisuborn" );
 MODULE_DESCRIPTION( "led device." );
 MODULE_LICENSE("GPL");
@@ -86,7 +86,7 @@ static struct platform_device led_device_s = {
     .resource = led_resrc,
     .num_resources = ARRAY_SIZE(led_resrc),
     .dev = {
-        .release = led_dev_release;
+        .release = led_dev_release,
     },
 };
 
@@ -96,7 +96,7 @@ static struct platform_device led_device_s = {
 static void led_dev_release(struct device *dev)
 {
     if ( dev ) {
-        printk( "device: %s released.\n", DEV_NAME );
+        pr_info( "device: %s released.\n", DEV_NAME );
         dev = NULL;
     }
 }
@@ -104,7 +104,7 @@ static void led_dev_release(struct device *dev)
 static int __init led_dev_init( void )
 {
     int err;
-    err = platform_device_register( led_device_s );
+    err = platform_device_register( &led_device_s );
     if (err) {
 		pr_warn("Could not register led_device_s");
 		goto register_fail;
@@ -116,8 +116,8 @@ register_fail:
     platform_device_unregister( &led_device_s );
 }
 
-static int __exit led_dev_exit( void )
+static void __exit led_dev_exit( void )
 {
-    platform_device_unregister( led_device_s );
+    platform_device_unregister( &led_device_s );
 }
 

@@ -97,7 +97,7 @@ static ssize_t led_drv_writ (struct file *file, const char __user *ubuf, size_t 
     else if ( LED_OPT_PWM == chrti(opt) ) {     // 传入字符，转换成十进制数
         err = copy_from_user( &pwm_freq, ubuf+1, 1 );
         led_opr_p->pwm_init( ledx, chrti(pwm_freq) );
-        printk( "ledx:%d pwm_freq:%d", ledx, pwm_freq );
+        pr_info( "ledx:%d pwm_freq:%d", ledx, pwm_freq );
     }
     return 1;
 }
@@ -120,13 +120,13 @@ static int __init led_drv_init(void)
     int res = 0;
     u8 i;
 
-    printk( "%s line %d\n", __FUNCTION__, __LINE__ );
+    pr_info( "%s line %d\n", __FUNCTION__, __LINE__ );
 
     major = register_chrdev( 0, mod_name, &led_fopt );
 
     led_drv_class = class_create(THIS_MODULE, "led_class");
 	if (IS_ERR(led_drv_class)) {
-        printk( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
+        pr_info( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
 		res = PTR_ERR(led_drv_class);
         unregister_chrdev( major, mod_name );
 		return -1;
@@ -144,7 +144,7 @@ static int __init led_drv_init(void)
 static void __exit led_drv_exit(void) 
 {
     u8 i;
-    printk( "%s line %d\n", __FUNCTION__, __LINE__ );
+    pr_info( "%s line %d\n", __FUNCTION__, __LINE__ );
     
     for ( i = 0; i < LED_NUM; i++ )
         device_destroy(led_drv_class, MKDEV(major, i));

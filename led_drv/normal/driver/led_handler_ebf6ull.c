@@ -69,7 +69,7 @@ static void ebf6ull_led_init( u8 which_led )
     if ( ledx[which_led].conf_status )
         return;
 
-    printk( "error led config.\n" );
+    pr_info( "error led config.\n" );
 
     switch ( which_led ) {
     case LED_D4:     // EBF6ULL的 LED_D4
@@ -109,7 +109,7 @@ static void ebf6ull_led_init( u8 which_led )
         ledx[which_led].oft = 3;
         break;
     default:
-        printk( "led error.\n" );
+        pr_info( "led error.\n" );
         return;
     }
 
@@ -133,7 +133,7 @@ static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt )
 
 static u8 ebf6ull_led_get_stat ( u8 which_led )
 {
-    printk( "led_status_buf: %d\n ", ledx[which_led].status );
+    pr_info( "led_status_buf: %d\n ", ledx[which_led].status );
     return ledx[which_led].status;
 }
 
@@ -148,7 +148,7 @@ static u8 ebf6ull_led_get_stat ( u8 which_led )
  ************************************************/
 static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq )
 {
-    printk( "led%d into pwm mode. \npwm_freq:(%d)kHz\n", which_led+4, pwm_freq*100 );
+    pr_info( "led%d into pwm mode. \npwm_freq:(%d)kHz\n", which_led+4, pwm_freq*100 );
 }
 
 static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt )

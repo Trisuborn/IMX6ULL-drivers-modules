@@ -99,13 +99,13 @@ static int __init pwm_drv_init(void)
     int res = 0;
     u8 i;
 
-    printk( "%s line %d\n", __FUNCTION__, __LINE__ );
+    pr_info( "%s line %d\n", __FUNCTION__, __LINE__ );
 
     major = register_chrdev( 0, mod_name, &pwm_fopt );
 
     pwm_drv_class = class_create(THIS_MODULE, "pwm_class");
 	if (IS_ERR(pwm_drv_class)) {
-        printk( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
+        pr_info( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
 		res = PTR_ERR(pwm_drv_class);
         unregister_chrdev( major, mod_name );
 		return -1;
@@ -120,7 +120,7 @@ static int __init pwm_drv_init(void)
 static void __exit pwm_drv_exit(void) 
 {
     u8 i;
-    printk( "%s line %d\n", __FUNCTION__, __LINE__ );
+    pr_info( "%s line %d\n", __FUNCTION__, __LINE__ );
     
     for ( i = 0; i < PWM_NUM; i++ )
         device_destroy(pwm_drv_class, MKDEV(major, i));

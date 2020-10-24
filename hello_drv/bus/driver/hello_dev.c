@@ -89,7 +89,7 @@ static struct platform_device hello_dev_s = {
 void hello_dev_release(struct device *dev)
 {
     if ( dev ) {
-        printk( "device: %s released.\n", DEV_NAME );
+        pr_info( "device: %s released.\n", DEV_NAME );
         dev = NULL;
     }
 }
@@ -97,7 +97,7 @@ void hello_dev_release(struct device *dev)
 static int __init hello_dev_init( void )
 {
     int err;
-    printk( "%s Register device: %s\n", __FUNCTION__, hello_dev_s.name );
+    pr_info( "%s Register device: %s\n", __FUNCTION__, hello_dev_s.name );
     err = platform_device_register( &hello_dev_s );
     if (err) {
 		pr_warn("Could not register hello");
@@ -113,7 +113,7 @@ register_fail:
 
 static void __exit hello_dev_exit( void )
 {
-    printk( "%s Unregister device: %s\n", __FUNCTION__, hello_dev_s.name );
+    pr_info( "%s Unregister device: %s\n", __FUNCTION__, hello_dev_s.name );
     platform_device_unregister( &hello_dev_s );
 }
 

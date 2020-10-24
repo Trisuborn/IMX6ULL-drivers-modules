@@ -28,6 +28,7 @@
  ************************************************/
 #include "imx6ull_common_inc.h"
 #include "led_dev.h"
+#include "led_typedef.h"
 
 /************************************************
  * @brief user define
@@ -35,16 +36,26 @@
 #define DRV_NAME    LED_MOD_NAME
 
 /************************************************
+ * @brief extern functions
+ ************************************************/
+extern void led_drv_core_device_create ( u8 minor );
+extern void led_drv_core_device_destroy( u8 minor );
+extern void register_led_opt( led_ctl_typedef *this_led_opt );
+
+/************************************************
  * @brief function declare
  ************************************************/
+static int led_drv_probe(struct platform_device *dev);
+static int led_drv_remove(struct platform_device *dev);
+
 static int __init led_drv_init( void );
-static int __exit led_drv_exit( void );
+static void __exit led_drv_exit( void );
 
 /************************************************
  * @brief module config
  ************************************************/
 module_init( led_drv_init );
-module_init( led_drv_exit );
+module_exit( led_drv_exit );
 MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>  Github: https://github.com/Trisuborn" );
 MODULE_DESCRIPTION( "led driver." );
 MODULE_LICENSE("GPL");
@@ -52,26 +63,54 @@ MODULE_LICENSE("GPL");
 /************************************************
  * @brief static var
  ************************************************/
-
 static struct platform_driver led_driver_s = {
-    .probe  = ;
-    .remove = ;
+    .probe  = led_drv_probe,
+    .remove = led_drv_remove,
     .driver = {
 		.name = DRV_NAME,
 	},
 };
 
+static u8 dev_param[50][2] = {0};
+
 /************************************************
  * @brief function realized
  ************************************************/
+static int led_drv_probe(struct platform_device *pdev)
+{
+    struct resource *res;
+    u8 dev_num = pdev->num_resources;
+    u8 i;
+
+    for ( i = 0; i < dev_num ; i++ ) {
+        res = platform_get_resource( pdev, IORESOURCE_REG, i );
+        
+        dev_param[i][0] = res->start;       // GPIOx
+        dev_param[i][1] = res->end;         // PINx
+
+        led_drv_core_device_create( i );
+
+        pr_info( "The %s's %s %d has been create.\n", pdev->name, res->name, i );
+
+    }
+
+    return 0;
+}
+
+static int led_drv_remove(struct platform_device *pdev)
+{
+    u8 i;
+    for ( i = 0; i < pdev->num_resources; i++ ) {
+        led_drv_core_device_destroy( i );
+        pr_info( "The %s's %s %d has been destroied.\n", pdev->name, pdev->resource[i].name, i );
+    }
+    return 0;
+}
+
 static int __init led_drv_init( void )
 {
-
-    led_driver_s.probe  = ;
-    led_driver_s.remove = ;
-
     int err;
-    err = platform_driver_register( led_driver_s );
+    err = platform_driver_register( &led_driver_s );
     if (err) {
 		pr_warn("Could not register led_driver_s");
 		goto register_fail;
@@ -83,8 +122,8 @@ register_fail:
     platform_driver_unregister( &led_driver_s );
 }
 
-static int __exit led_drv_exit( void )
+static void __exit led_drv_exit( void )
 {
-    platform_driver_unregister( led_driver_s );
+    platform_driver_unregister( &led_driver_s );
 }
 

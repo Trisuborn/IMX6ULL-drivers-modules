@@ -59,13 +59,12 @@ static struct platform_driver hello_drv_s = {
 
 static u8 dev_param[50][2];
 
-/**
- * @brief function's realized
- */
+/************************************************
+ * @brief function realized
+ ************************************************/
 
 static int hello_drv_probe(struct platform_device *pdev)
 {
-
     struct resource *res;
     u8 dev_num = pdev->num_resources;
     u8 i;
@@ -79,7 +78,7 @@ static int hello_drv_probe(struct platform_device *pdev)
 
         hello_drv_core_device_create( i );
 
-        printk( "The %s's %s %d has been create.\n", pdev->name, res->name, i );
+        pr_info( "The %s's %s %d has been create.\n", pdev->name, res->name, i );
 
     }
 
@@ -91,7 +90,7 @@ static int hello_drv_remove(struct platform_device *pdev)
     u8 i;
     for ( i = 0; i < pdev->num_resources; i++ ) {
         hello_drv_core_device_destroy( i );
-        printk( "The %s's %s %d has been destroied.\n", pdev->name, pdev->resource[i].name, i );
+        pr_info( "The %s's %s %d has been destroied.\n", pdev->name, pdev->resource[i].name, i );
     }
     return 0;
 }
@@ -99,7 +98,7 @@ static int hello_drv_remove(struct platform_device *pdev)
 static int __init hello_drv_init( void )
 {
     int err;
-    printk( "%s Register driver: %s\n", __FUNCTION__, hello_drv_s.driver.name );
+    pr_info( "%s Register driver: %s\n", __FUNCTION__, hello_drv_s.driver.name );
     err = platform_driver_register( &hello_drv_s );
     if ( err ) {
         pr_warn( "%s Register error.\n", __FUNCTION__ );
@@ -114,7 +113,7 @@ register_failed:
 
 static void __exit hello_drv_exit( void )
 {   
-    printk( "%s unregister driver: %s\n", __FUNCTION__, hello_drv_s.driver.name );
+    pr_info( "%s unregister driver: %s\n", __FUNCTION__, hello_drv_s.driver.name );
     platform_driver_unregister( &hello_drv_s );
 }
 

@@ -59,19 +59,19 @@ static ssize_t hello_drv_writ (struct file *file, const char __user *ubuf, size_
     int status = 0;
     memset( mod_buf, 0, 512 );
     status = copy_from_user( mod_buf, ubuf, size );
-    printk( "hello write \"%s\" \n", mod_buf );
+    pr_info( "hello write \"%s\" \n", mod_buf );
     return size;
 }
 
 static int hello_drv_open (struct inode *inode, struct file *file) 
 {   
-    printk("%s %s line %d\n", __FILE__, __FUNCTION__, __LINE__);
+    pr_info("%s %s line %d\n", __FILE__, __FUNCTION__, __LINE__);
     return 0;
 }
 
 static int hello_drv_release (struct inode *inode, struct file *file) 
 {
-    printk("%s %s line %d\n", __FILE__, __FUNCTION__, __LINE__);
+    pr_info("%s %s line %d\n", __FILE__, __FUNCTION__, __LINE__);
     return 0;
 }
 
@@ -79,13 +79,13 @@ static int __init hello_drv_init(void)
 {
     int res = 0;
 
-    printk( "%s line %d\n", __FUNCTION__, __LINE__ );
+    pr_info( "%s line %d\n", __FUNCTION__, __LINE__ );
 
     major = register_chrdev( 0, mod_name, &hello_fopt );
 
     hello_drv_class = class_create(THIS_MODULE, "hello_class");
 	if (IS_ERR(hello_drv_class)) {
-        printk( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
+        pr_info( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
 		res = PTR_ERR(hello_drv_class);
         unregister_chrdev( major, mod_name );
 		return -1;
@@ -98,7 +98,7 @@ static int __init hello_drv_init(void)
 
 static void __exit hello_drv_exit(void) 
 {
-    printk( "%s line %d\n", __FUNCTION__, __LINE__ );
+    pr_info( "%s line %d\n", __FUNCTION__, __LINE__ );
     device_destroy(hello_drv_class, MKDEV(major, 0));
     class_destroy(hello_drv_class);
     unregister_chrdev( major, mod_name );
