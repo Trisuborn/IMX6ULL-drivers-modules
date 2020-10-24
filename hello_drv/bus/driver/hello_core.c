@@ -24,8 +24,8 @@ static ssize_t hello_drv_core_read (struct file *file, char __user * ubuf, size_
 static ssize_t hello_drv_core_writ (struct file *file, const char __user *ubuf, size_t size, loff_t *off);
 static int hello_drv_core_open (struct inode *inode, struct file *file);
 static int hello_drv_core_release (struct inode *inode, struct file *file);
-static int   hello_drv_core_core_init(void);
-static void  hello_drv_core_core_exit(void);
+static int   hello_drv_core_init(void);
+static void  hello_drv_core_exit(void);
 /************************************************
  * @brief EXPORT_SYMBOL function
  ************************************************/
@@ -38,8 +38,8 @@ static void hello_drv_core_device_destroy( u8 minor );
 EXPORT_SYMBOL( hello_drv_core_device_create );
 EXPORT_SYMBOL( hello_drv_core_device_destroy );
 
-module_init(hello_drv_core_core_init);
-module_exit(hello_drv_core_core_exit);
+module_init(hello_drv_core_init);
+module_exit(hello_drv_core_exit);
 MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>" );
 MODULE_DESCRIPTION( "Hello world driver core." );
 MODULE_LICENSE("GPL");
@@ -92,7 +92,7 @@ static int hello_drv_core_release (struct inode *inode, struct file *file)
     return 0;
 }
 
-static int __init hello_drv_core_core_init(void) 
+static int __init hello_drv_core_init(void) 
 {
     int res = 0;
 
@@ -113,8 +113,9 @@ static int __init hello_drv_core_core_init(void)
     return 0;
 }
 
-static void __exit hello_drv_core_core_exit(void) 
+static void __exit hello_drv_core_exit(void) 
 {
+    
     printk( "%s line %d\n", __FUNCTION__, __LINE__ );
     device_destroy(hello_drv_core_class, MKDEV(major, 0));
     class_destroy(hello_drv_core_class);
@@ -123,7 +124,7 @@ static void __exit hello_drv_core_core_exit(void)
 
 static void hello_drv_core_device_create( u8 minor )
 {
-    device_create(hello_drv_core_class, NULL, MKDEV(major, minor), NULL, "hello%d", minor ); 
+    device_create(hello_drv_core_class, NULL, MKDEV(major, minor), NULL, "hello%d", minor+1 ); 
 }
 
 static void hello_drv_core_device_destroy( u8 minor )
