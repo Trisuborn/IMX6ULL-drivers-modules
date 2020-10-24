@@ -7,8 +7,9 @@ CUR_PATH	= $(shell pwd)
 src_all		= $(wildcard *.c)
 obj_all		= $(patsubst %.c, %.o, $(src_all))
 
-hellodrv-y := hello_drv.o # leddrv.o board_100ask_imx6ull-qemu.o
-obj-m   += hellodrv.o
+## hellodrv-y := hello_drv.o # leddrv.o board_100ask_imx6ull-qemu.o
+obj-m   += hello_dev.o
+obj-m   += hello_core.o
 
 all:
 	@ make -C $(KENAL_DIR) M=$(CUR_PATH) modules 
