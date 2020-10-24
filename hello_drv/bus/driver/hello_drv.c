@@ -22,6 +22,12 @@
  */
 #define DRV_NAME    HELLO_MOD_NAME
 
+/************************************************
+ * @brief extern functions
+ ************************************************/
+extern void hello_drv_core_device_create ( u8 minor );
+extern void hello_drv_core_device_destroy( u8 minor );
+
 /**
  * @brief functions declare
  */
@@ -51,19 +57,42 @@ static struct platform_driver hello_drv_s = {
 	},
 };
 
+static u8 dev_param[50][2];
+
 /**
  * @brief function's realized
  */
 
 static int hello_drv_probe(struct platform_device *pdev)
 {
-    printk( "do %s\n", __FUNCTION__ );
+
+    struct resource *res;
+    u8 dev_num = pdev->num_resources;
+    u8 i;
+
+    for ( i = 0; i < dev_num ; i++ ) {
+        res = platform_get_resource( pdev, IORESOURCE_REG, i );
+        
+
+        dev_param[i][0] = res->start;       // GPIOx
+        dev_param[i][1] = res->end;         // PINx
+
+        hello_drv_core_device_create( i );
+
+        printk( "The %s's %s %d has been create.\n", pdev->name, res->name, i );
+
+    }
+
     return 0;
 }
 
 static int hello_drv_remove(struct platform_device *pdev)
 {
-    printk( "do %s\n", __FUNCTION__ );
+    u8 i;
+    for ( i = 0; i < pdev->num_resources; i++ ) {
+        hello_drv_core_device_destroy( i );
+        printk( "The %s's %s %d has been destroied.\n", pdev->name, pdev->resource[i].name, i );
+    }
     return 0;
 }
 
@@ -72,7 +101,15 @@ static int __init hello_drv_init( void )
     int err;
     printk( "%s Register driver: %s\n", __FUNCTION__, hello_drv_s.driver.name );
     err = platform_driver_register( &hello_drv_s );
+    if ( err ) {
+        pr_warn( "%s Register error.\n", __FUNCTION__ );
+        goto register_failed;
+    }
     return 0;
+
+register_failed:
+    platform_driver_unregister( &hello_drv_s );
+
 }
 
 static void __exit hello_drv_exit( void )
