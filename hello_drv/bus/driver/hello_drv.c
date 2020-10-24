@@ -42,7 +42,7 @@ static void __exit hello_drv_exit( void );
  */
 module_init(hello_drv_init);
 module_exit(hello_drv_exit);
-MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>" );
+MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>  Github: https://github.com/Trisuborn" );
 MODULE_DESCRIPTION( "Hello world driver." );
 MODULE_LICENSE("GPL");
 

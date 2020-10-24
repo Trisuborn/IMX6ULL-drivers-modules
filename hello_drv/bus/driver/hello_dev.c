@@ -25,7 +25,7 @@
 /**
  * @brief functions declare
  */
-void hello_dev_release(struct device *dev);
+static void hello_dev_release(struct device *dev);
 
 static int __init hello_dev_init( void );
 static void __exit hello_dev_exit( void );
@@ -35,7 +35,7 @@ static void __exit hello_dev_exit( void );
  */
 module_init( hello_dev_init );
 module_exit( hello_dev_exit );
-MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>" );
+MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>  Github: https://github.com/Trisuborn" );
 MODULE_DESCRIPTION( "Hello device resource." );
 MODULE_LICENSE( "GPL" );
 
@@ -88,7 +88,10 @@ static struct platform_device hello_dev_s = {
 
 void hello_dev_release(struct device *dev)
 {
-    printk( "device: %s released.\n", DEV_NAME );
+    if ( dev ) {
+        printk( "device: %s released.\n", DEV_NAME );
+        dev = NULL;
+    }
 }
 
 static int __init hello_dev_init( void )

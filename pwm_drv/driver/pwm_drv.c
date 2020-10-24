@@ -48,7 +48,7 @@ static void __exit pwm_drv_exit(void);
  */
 module_init(pwm_drv_init);
 module_exit(pwm_drv_exit);
-MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>" );
+MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>  Github: https://github.com/Trisuborn" );
 MODULE_DESCRIPTION( "pwm driver." );
 MODULE_LICENSE("GPL");
 

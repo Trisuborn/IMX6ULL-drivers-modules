@@ -40,7 +40,7 @@ EXPORT_SYMBOL( hello_drv_core_device_destroy );
 
 module_init(hello_drv_core_init);
 module_exit(hello_drv_core_exit);
-MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>" );
+MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>  Github: https://github.com/Trisuborn" );
 MODULE_DESCRIPTION( "Hello world driver core." );
 MODULE_LICENSE("GPL");
 MODULE_VERSION( "2.0" );
