@@ -1,10 +1,9 @@
-#ifndef HELLO_RESRC_H
-#define HELLO_RESRC_H
+#ifndef HELLO_DEV_H
+#define HELLO_DEV_H
 
 #include <linux/platform_device.h>
 
-#define HELLO_NUM   4
-#define HELLO_DEV_DRV "hello_dev_drv_name"
+#define HELLO_MOD_NAME "hello_world_mod"
 
 /* 两个字节 
 *  高字节代表GPIOx

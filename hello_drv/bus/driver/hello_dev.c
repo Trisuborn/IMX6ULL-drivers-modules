@@ -11,9 +11,16 @@
 #include <linux/uaccess.h>
 #include <linux/platform_device.h>
 
-/* user header file */
+/**
+ * @brief user header file
+ */
 #include "imx6ull_common_inc.h"
-#include "hello_resrc.h"
+#include "hello_dev.h"
+
+/**
+ * @brief user define
+ */
+#define DEV_NAME HELLO_MOD_NAME
 
 /**
  * @brief functions declare
@@ -36,34 +43,45 @@ MODULE_LICENSE( "GPL" );
 static struct resource hello_resrc_arr[] = {
     /* 1 */
     {
-        .name  = "hello_ebf6ull",
+        // .name  = "hello_ebf6ull",
         .start = GPIOx_PINx( 1, 4 ),
         .flags = IORESOURCE_IO,
     },
     /* 2 */
     {
-        .name  = "hello_ebf6ull",
+        // .name  = "hello_ebf6ull",
         .start = GPIOx_PINx( 4, 20 ),
         .flags = IORESOURCE_IO,
     },
     /* 3 */
     {
-        .name  = "hello_ebf6ull",
+        // .name  = "hello_ebf6ull",
         .start = GPIOx_PINx( 4, 19 ),
         .flags = IORESOURCE_IO,
     },
     /* 4 */
     {
-        .name  = "hello_ebf6ull",
+        // .name  = "hello_ebf6ull",
         .start = GPIOx_PINx( 5, 3 ),
         .flags = IORESOURCE_IO,
     },
 };
 
+static struct resource resources[] = {
+        {
+                .start = GPIOx_PINx(3,1),
+                .flags = IORESOURCE_IRQ,
+        },
+        {
+                .start = GPIOx_PINx(5,8),
+                .flags = IORESOURCE_IRQ,
+        },
+};
+
 static struct platform_device hello_dev_s = {
-    .name = HELLO_DEV_DRV,
-    .resource = hello_resrc_arr,
-    .num_resources = ARRAY_SIZE( hello_resrc_arr ),
+    .name = DEV_NAME,
+    .resource = resources,
+    .num_resources = ARRAY_SIZE( resources ),
 };
 
 
@@ -72,6 +90,7 @@ static int __init hello_dev_init( void )
     int err;
     printk( "%s Register device: %s\n", __FUNCTION__, hello_dev_s.name );
     err = platform_device_register( &hello_dev_s );
+    return 0;
 }
 
 static void __exit hello_dev_exit( void )

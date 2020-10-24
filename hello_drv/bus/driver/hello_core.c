@@ -19,16 +19,16 @@ static ssize_t hello_drv_writ (struct file *file, const char __user *ubuf, size_
 static int hello_drv_open (struct inode *inode, struct file *file);
 static int hello_drv_release (struct inode *inode, struct file *file);
 
-static int   hello_drv_init(void);
-static void  hello_drv_exit(void);
+static int   hello_drv_core_init(void);
+static void  hello_drv_core_exit(void);
 
 /**
  * @brief module's info
  */
-module_init(hello_drv_init);
-module_exit(hello_drv_exit);
+module_init(hello_drv_core_init);
+module_exit(hello_drv_core_exit);
 MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>" );
-MODULE_DESCRIPTION( "Hello world driver." );
+MODULE_DESCRIPTION( "Hello world driver core." );
 MODULE_LICENSE("GPL");
 
 /**
@@ -76,7 +76,7 @@ static int hello_drv_release (struct inode *inode, struct file *file)
     return 0;
 }
 
-static int __init hello_drv_init(void) 
+static int __init hello_drv_core_init(void) 
 {
     int res = 0;
 
@@ -97,7 +97,7 @@ static int __init hello_drv_init(void)
     return 0;
 }
 
-static void __exit hello_drv_exit(void) 
+static void __exit hello_drv_core_exit(void) 
 {
     printk( "%s line %d\n", __FUNCTION__, __LINE__ );
     device_destroy(hello_drv_class, MKDEV(major, 0));

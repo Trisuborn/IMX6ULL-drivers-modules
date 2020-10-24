@@ -9,6 +9,7 @@ obj_all		= $(patsubst %.c, %.o, $(src_all))
 
 ## hellodrv-y := hello_drv.o # leddrv.o board_100ask_imx6ull-qemu.o
 obj-m   += hello_dev.o
+obj-m   += hello_drv.o
 obj-m   += hello_core.o
 
 all:
