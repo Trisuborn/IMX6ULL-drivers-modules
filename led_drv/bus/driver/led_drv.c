@@ -77,7 +77,8 @@ static struct platform_driver led_driver_s = {
 	},
 };
 
-static u8 dev_param[20][2] = {0};
+u8 dev_param[20][2] = {0};
+u8 dev_num = 0;
 
 /************************************************
  * @brief function realized
@@ -85,9 +86,9 @@ static u8 dev_param[20][2] = {0};
 static int led_drv_probe(struct platform_device *pdev)
 {
     struct resource *res;
-    u8 dev_num = pdev->num_resources;
     u8 i;
-
+    
+    dev_num = pdev->num_resources;
     for ( i = 0; i < dev_num ; i++ ) {
         res = platform_get_resource( pdev, IORESOURCE_REG, i );
         

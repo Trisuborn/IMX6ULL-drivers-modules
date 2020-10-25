@@ -31,6 +31,7 @@ static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq );
 static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
 
 extern u8 dev_param[20][2];
+extern u8 dev_num;
 static led_property_typedef ledx[LED_NUM];
 
 static CCM_Type  *REMAP_CCM      = NULL;
@@ -50,10 +51,6 @@ static led_ctl_typedef ebf6ull_led_opr_s = {
 static void ebf6ull_led_struct_init ( void )
 {
     u8 i;
-    for ( i = 0; i < LED_NUM; i++ ) {
-        ledx[i].status = 0;
-        ledx[i].conf_status = 0;
-    }
 
     if ( REMAP_CCM == NULL ) {
         REMAP_CCM   = (CCM_Type *) ioremap( (u32)CCM  , sizeof( CCM_Type  ) );
@@ -61,6 +58,40 @@ static void ebf6ull_led_struct_init ( void )
         REMAP_GPIO4 = (GPIO_Type *)ioremap( (u32)GPIO4, sizeof( GPIO_Type ) );
         REMAP_GPIO5 = (GPIO_Type *)ioremap( (u32)GPIO5, sizeof( GPIO_Type ) );
     }
+
+    for ( i = 0; i < dev_num; i++ ) {
+        if ( ledx[i].conf_status )
+            break;
+        switch ( dev_param[i][0] ) {
+        case 1:
+            ledx[i].reg.REMAP_CCM_CCGRx = REMAP_CCM->CCGR1;
+            ledx[i].reg.REMAP_GPIOx     = REMAP_GPIO1;
+            if ( dev_param[i][1] < 10 ) {
+                ledx[0].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x5C + (0x4*dev_param[i][1])), 4 );
+            }
+            break;
+        case 4:
+            ledx[i].reg.REMAP_CCM_CCGRx = REMAP_CCM->CCGR3;
+            ledx[i].reg.REMAP_GPIOx     = REMAP_GPIO4;
+            ledx[1].reg.REMAP_PAD       = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x178 + (0x4*dev_param[i][1])), 4 );
+            break;
+        case 5:
+            ledx[i].reg.REMAP_CCM_CCGRx = REMAP_CCM->CCGR1;
+            ledx[i].reg.REMAP_GPIOx     = REMAP_GPIO5;
+            if ( dev_param[i][1] < 10 ) {
+                ledx[i].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x8 + (0x4*dev_param[i][1])) , 4 );
+            } else {
+                ledx[i].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x0 + (0x4*(dev_param[i][1]-10))) , 4 );
+            }
+            break;
+        default:
+            break;
+        }
+
+        ledx[i].oft = dev_param[i][1];
+
+    }
+
 }
 
 static void ebf6ull_led_init( u8 which_led )
@@ -72,52 +103,52 @@ static void ebf6ull_led_init( u8 which_led )
 
     pr_info( "led config.\n" );
 
-    switch ( which_led ) {
-    case LED_D4:     // EBF6ULL的 LED_D4
-        ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO1;
-        ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR1;
-        ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x6C) , 4 );
+    // switch ( which_led ) {
+    // case LED_D4:     // EBF6ULL的 LED_D4
+    //     ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO1;
+    //     ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR1;
+    //     ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x6C) , 4 );
 
-        *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 26;
-        *ledx[which_led].reg.REMAP_PAD          =  0x05;
-        ledx[which_led].oft = 4;
-        break;
-    case LED_D5:     // EBF6ULL的 LED_D5
-        ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO4;
-        ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR3;
-        ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1E0) , 4 );
+    //     *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 26;
+        
+    //     ledx[which_led].oft = 4;
+    //     break;
+    // case LED_D5:     // EBF6ULL的 LED_D5
+    //     ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO4;
+    //     ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR3;
+    //     ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1E0) , 4 );
 
-        *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 12;
-        *ledx[which_led].reg.REMAP_PAD          =  0x05;
-        ledx[which_led].oft = 20;
-        break;
-    case LED_D6:     // EBF6ULL的 LED_D6
-        ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO4;
-        ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR3;
-        ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1DC) , 4 );
+    //     *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 12;
+        
+    //     ledx[which_led].oft = 20;
+    //     break;
+    // case LED_D6:     // EBF6ULL的 LED_D6
+    //     ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO4;
+    //     ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR3;
+    //     ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1DC) , 4 );
 
-        *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 12;
-        *ledx[which_led].reg.REMAP_PAD          =  0x05;
-        ledx[which_led].oft = 19;
-        break;
-    case LED_D7:     // EBF6ULL的 LED_D7
-        ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO5;
-        ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR1;
-        ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x14) , 4 );
+    //     *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 12;
+        
+    //     ledx[which_led].oft = 19;
+    //     break;
+    // case LED_D7:     // EBF6ULL的 LED_D7
+    //     ledx[which_led].reg.REMAP_GPIOx         = REMAP_GPIO5;
+    //     ledx[which_led].reg.REMAP_CCM_CCGRx     = &REMAP_CCM->CCGR1;
+    //     ledx[which_led].reg.REMAP_PAD           = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x14) , 4 );
 
-        *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 30;
-        *ledx[which_led].reg.REMAP_PAD          =  0x05;
-        ledx[which_led].oft = 3;
-        break;
-    default:
-        pr_info( "led error.\n" );
-        return;
-    }
+    //     *ledx[which_led].reg.REMAP_CCM_CCGRx    |= 3 << 30;
+        
+    //     ledx[which_led].oft = dev_param[which_led][1];
+    //     break;
+    // default:
+    //     pr_info( "led error.\n" );
+    //     return;
+    // }
 
-    pr_info( "led config end.\n" );
+    // pr_info( "led config end.\n" );
 
-    ledx[which_led].reg.REMAP_GPIOx->GDIR   |= 1 << ledx[which_led].oft;
-
+    // *ledx[which_led].reg.REMAP_PAD          =  0x05;
+    // ledx[which_led].reg.REMAP_GPIOx->GDIR   |= 1 << ledx[which_led].oft;
     ledx[which_led].conf_status = 1;
 
 }
