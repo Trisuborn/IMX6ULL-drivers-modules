@@ -117,6 +117,7 @@ static ssize_t led_drv_core_writ (struct file *file, const char __user *ubuf, si
         led_opt->pwm_init( ledx, chrti(pwm_freq) );
         pr_info( "ledx:%d pwm_freq:%d", ledx, pwm_freq );
     }
+    
     return 1;
 }
  

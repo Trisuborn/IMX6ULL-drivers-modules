@@ -42,7 +42,8 @@ typedef struct {
 typedef struct {
     u8  status;
     u8  conf_status;
-    u32 oft;
+    u32 dr_oft;
+    u32 clk_oft;
     led_reg_typedef reg;
 } led_property_typedef;
 

@@ -19,7 +19,7 @@
 #include <string.h> 
 
 static char def_led[] = "LED_D7";
-static char def_opt[] = "off";
+static char def_opt[] = "on";
 static char path_prefix[20] = "/dev/";
 
 typedef struct {
