@@ -10,27 +10,30 @@
  * 
  ************************************************/
 
+#define EBF6ULL_LED_COMPATIBLE "imx6ull,led"
+
 /* 根节点 */
 / {
-    /* 子节点 */
+    /* LED_Dx子节点 */
     LED_D@4 {
-        compatible = "ebf6ull,led";
-        gpiox = 1;
-        pinx  = 4;
+        compatible = EBF6ULL_LED_COMPATIBLE;
+        gpiox = <1>;
+        pinx  = <4>;
     };
     LED_D@5 {
-        compatible = "ebf6ull,led";
-        gpiox = 4;
-        pinx  = 20;
+        compatible = EBF6ULL_LED_COMPATIBLE;
+        gpiox = <4>;
+        pinx  = <20>;
     };
     LED_D@6 {
-        compatible = "ebf6ull,led";
-        gpiox = 4;
-        pinx  = 19;
+        compatible = EBF6ULL_LED_COMPATIBLE;
+        gpiox = <4>;
+        pinx  = <19>;
     };
     LED_D@7 {
-        compatible = "ebf6ull,led";
-        gpiox = 5;
-        pinx  = 3;
+        compatible = EBF6ULL_LED_COMPATIBLE;
+        gpiox = <5>;
+        pinx  = <3>;
     };
+    
 };

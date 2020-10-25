@@ -9,13 +9,11 @@ CUR_PATH	= $(shell pwd)
 src_all		= $(wildcard *.c)
 obj_all		= $(patsubst %.c, %.o, $(src_all))
 
+# led_core-y := led_handler_ebf6ull.o led_drv.o led_drv_ctl.o
 led_drv_ctl-y := led_handler_ebf6ull.o led_drv.o
-# led_handler_ebf6ull-y += 
-# led_handler_ebf6ull-y += uldivmod.o
-# led_handler_ebf6ull-y += fsl_common.o
 obj-m   += led_drv_ctl.o
 obj-m   += led_core.o
-obj-m   += led_dev.o
+# obj-m   += led_dev.o
 
 all:
 	@ make -C $(KENAL_DIR) M=$(CUR_PATH) modules 

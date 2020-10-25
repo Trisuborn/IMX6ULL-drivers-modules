@@ -30,7 +30,7 @@ static u8 ebf6ull_led_get_stat ( u8 which_led );
 static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq );
 static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
 
-extern u8 dev_param[20][2];
+extern u32 dev_param[20][2];
 extern u8 dev_num;
 static led_property_typedef ledx[10];
 
@@ -51,7 +51,7 @@ static led_ctl_typedef ebf6ull_led_opr_s = {
 static void ebf6ull_led_struct_init ( void )
 {
     u8 i;
-    for ( i = 0; i < LED_NUM; i++ ) {
+    for ( i = 0; i < dev_num; i++ ) {
         ledx[i].status = 0;
         ledx[i].conf_status = 0;
     }
@@ -98,7 +98,7 @@ static void ebf6ull_led_struct_init ( void )
             break;
         }
 
-        *ledx[i].reg.REMAP_CCM_CCGRx |=  3<<(ledx[i].clk_oft);
+        *ledx[i].reg.REMAP_CCM_CCGRx    |=  3<<(ledx[i].clk_oft);
         *ledx[i].reg.REMAP_PAD = 0x5;
 
         ledx[i].dr_oft = dev_param[i][1];

@@ -21,6 +21,7 @@
 #include <linux/notifier.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+#include <linux/of.h>
 #include <linux/platform_device.h>
 
 /************************************************
@@ -68,50 +69,81 @@ extern led_ctl_typedef ebf6ull_led_opr_s;
 
 /************************************************
  * @brief static var
- ************************************************/
+ ***********************************************/
+static const struct of_device_id of_led_ebf6ull_match_table[] = {
+	{ .compatible = "imx6ull,led" },
+    { .compatible = "ebf6ull,led" },
+	{ }
+};
+
 static struct platform_driver led_driver_s = {
     .probe  = led_drv_probe,
     .remove = led_drv_remove,
     .driver = {
 		.name = DRV_NAME,
+        .of_match_table = of_led_ebf6ull_match_table,
 	},
 };
 
-u8 dev_param[20][2] = {0};
 u8 dev_num = 0;
+u32 dev_param[20][2]  = {0};
 
 /************************************************
  * @brief function realized
  ************************************************/
 static int led_drv_probe(struct platform_device *pdev)
 {
-    struct resource *res;
-    u8 i;
+    struct device_node *dev_np = NULL;
+    int err;
     
-    dev_num = pdev->num_resources;
-    for ( i = 0; i < dev_num ; i++ ) {
-        res = platform_get_resource( pdev, IORESOURCE_REG, i );
-        
-        dev_param[i][0] = res->start;       // GPIOx
-        dev_param[i][1] = res->end;         // PINx
-
-        led_drv_core_device_create( i );
-
-        pr_info( "The %s's %s %d has been create.\n", pdev->name, res->name, i );
-
+    dev_np = pdev->dev.of_node;
+    if ( dev_np == NULL ) {
+        pr_info( "probe node_get_error" );
+        return -1;
     }
 
+    err = of_property_read_u32( dev_np, "gpiox", &dev_param[dev_num][0] );
+    err = of_property_read_u32( dev_np, "pinx" , &dev_param[dev_num][1] );
+    pr_info( "probe err: %d\n", err );
+
+    led_drv_core_device_create( dev_num );
+
+    pr_info( "The %s's %s %d has been create.\n", pdev->name, dev_np->name, dev_num );
+
+    dev_num++;
+
     return 0;
+
 }
 
 static int led_drv_remove(struct platform_device *pdev)
 {
     u8 i;
-    for ( i = 0; i < pdev->num_resources; i++ ) {
-        led_drv_core_device_destroy( i );
-        pr_info( "The %s's %s %d has been destroied.\n", pdev->name, pdev->resource[i].name, i );
+    struct device_node *dev_np = NULL;
+    int err;
+
+    u8 gpiox = 0;
+    u8 pinx  = 0;
+    
+    dev_np = pdev->dev.of_node;
+    if ( dev_np == NULL ) {
+        pr_info( "probe node_get_error" );
+        return -1;
     }
+    
+    err = of_property_read_u8( dev_np, "gpiox", &gpiox );
+    err = of_property_read_u8( dev_np, "pinx" , &pinx );
+
+    for ( i = 0; i < dev_num; i++ ) {
+        if ( (gpiox == dev_param[dev_num][0]) && (pinx == dev_param[dev_num][1]) ) {
+            led_drv_core_device_destroy( i );
+            pr_info( "The %s's %s %d has been destroied.\n", pdev->name, dev_np->name, i );
+            break;
+        }
+    }
+
     return 0;
+
 }
 
 static int __init led_drv_init( void )
@@ -122,11 +154,14 @@ static int __init led_drv_init( void )
 		pr_warn("Could not register led_driver_s");
 		goto register_fail;
 	}
+
+    pr_info("ebf6ull_led_opr_get");
     register_led_opt( ebf6ull_led_opr_get() );
     return 0;
 
 register_fail:
     platform_driver_unregister( &led_driver_s );
+    return -1;
 }
 
 static void __exit led_drv_exit( void )
