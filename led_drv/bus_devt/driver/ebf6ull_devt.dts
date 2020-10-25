@@ -1,0 +1,36 @@
+
+/************************************************
+ * @file ebf6ull_devt.dts
+ * @author Trisuborn (ttowfive@gmail.com)
+ * @brief device tree for ebf6ull mini board.
+ * @version 0.1
+ * @date 2020-10-25
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ ************************************************/
+
+/* 根节点 */
+/ {
+    /* 子节点 */
+    LED_D@4 {
+        compatible = "ebf6ull,led";
+        gpiox = 1;
+        pinx  = 4;
+    };
+    LED_D@5 {
+        compatible = "ebf6ull,led";
+        gpiox = 4;
+        pinx  = 20;
+    };
+    LED_D@6 {
+        compatible = "ebf6ull,led";
+        gpiox = 4;
+        pinx  = 19;
+    };
+    LED_D@7 {
+        compatible = "ebf6ull,led";
+        gpiox = 5;
+        pinx  = 3;
+    };
+};
