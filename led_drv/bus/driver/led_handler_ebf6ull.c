@@ -30,6 +30,7 @@ static u8 ebf6ull_led_get_stat ( u8 which_led );
 static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq );
 static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
 
+extern u8 dev_param[20][2];
 static led_property_typedef ledx[LED_NUM];
 
 static CCM_Type  *REMAP_CCM      = NULL;
@@ -113,6 +114,8 @@ static void ebf6ull_led_init( u8 which_led )
         return;
     }
 
+    pr_info( "led config end.\n" );
+
     ledx[which_led].reg.REMAP_GPIOx->GDIR   |= 1 << ledx[which_led].oft;
 
     ledx[which_led].conf_status = 1;
@@ -158,6 +161,7 @@ static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt
 
 led_ctl_typedef *ebf6ull_led_opr_get(void) 
 {
+    ebf6ull_led_struct_init();
     return &ebf6ull_led_opr_s;
 }
 

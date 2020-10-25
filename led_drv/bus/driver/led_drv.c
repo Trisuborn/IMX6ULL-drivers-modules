@@ -29,6 +29,7 @@
 #include "imx6ull_common_inc.h"
 #include "led_dev.h"
 #include "led_typedef.h"
+#include "led_handler_ebf6ull.h"
 
 /************************************************
  * @brief user define
@@ -61,6 +62,11 @@ MODULE_DESCRIPTION( "led driver." );
 MODULE_LICENSE("GPL");
 
 /************************************************
+ * @brief extern var
+ ************************************************/
+extern led_ctl_typedef ebf6ull_led_opr_s;
+
+/************************************************
  * @brief static var
  ************************************************/
 static struct platform_driver led_driver_s = {
@@ -71,7 +77,7 @@ static struct platform_driver led_driver_s = {
 	},
 };
 
-static u8 dev_param[50][2] = {0};
+static u8 dev_param[20][2] = {0};
 
 /************************************************
  * @brief function realized
@@ -115,7 +121,7 @@ static int __init led_drv_init( void )
 		pr_warn("Could not register led_driver_s");
 		goto register_fail;
 	}
-    
+    register_led_opt( ebf6ull_led_opr_get() );
     return 0;
 
 register_fail:
@@ -126,4 +132,3 @@ static void __exit led_drv_exit( void )
 {
     platform_driver_unregister( &led_driver_s );
 }
-

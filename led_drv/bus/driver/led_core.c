@@ -90,8 +90,8 @@ static ssize_t led_drv_core_read (struct file *file, char __user * ubuf, size_t 
 
     pr_info( "read LED_D%d status\n", ledx );
 
-    // ledx_stat = led_opt->g_stat( ledx );
-    // err = copy_to_user( ubuf, &ledx_stat, 1 );
+    ledx_stat = led_opt->g_stat( ledx );
+    err = copy_to_user( ubuf, &ledx_stat, 1 );
 
     return 1;
 }
@@ -108,15 +108,15 @@ static ssize_t led_drv_core_writ (struct file *file, const char __user *ubuf, si
 
     pr_info( "write into LED_D%d\n", ledx );
 
-    // err = copy_from_user( &opt, ubuf, 1 );
-    // /* 判断普通模式还是PWM模式 */
-    // if ( (LED_OPT_ON == opt) || ( (LED_OPT_OFF == opt) ) )
-    //     led_opt->ctl( ledx, opt );
-    // else if ( LED_OPT_PWM == chrti(opt) ) {     // 传入字符，转换成十进制数
-    //     err = copy_from_user( &pwm_freq, ubuf+1, 1 );
-    //     led_opt->pwm_init( ledx, chrti(pwm_freq) );
-    //     pr_info( "ledx:%d pwm_freq:%d", ledx, pwm_freq );
-    // }
+    err = copy_from_user( &opt, ubuf, 1 );
+    /* 判断普通模式还是PWM模式 */
+    if ( (LED_OPT_ON == opt) || ( (LED_OPT_OFF == opt) ) )
+        led_opt->ctl( ledx, opt );
+    else if ( LED_OPT_PWM == chrti(opt) ) {     // 传入字符，转换成十进制数
+        err = copy_from_user( &pwm_freq, ubuf+1, 1 );
+        led_opt->pwm_init( ledx, chrti(pwm_freq) );
+        pr_info( "ledx:%d pwm_freq:%d", ledx, pwm_freq );
+    }
     return 1;
 }
  
@@ -124,7 +124,7 @@ static int led_drv_core_open (struct inode *inode, struct file *file)
 {
     u8 ledx = iminor( inode );
     pr_info( "init LED_D%d\n", ledx );
-    // led_opt->init( ledx );
+    led_opt->init( ledx );
     return 0;
 }
 
@@ -175,5 +175,4 @@ static void register_led_opt( led_ctl_typedef *this_led_opt )
 {
     led_opt = this_led_opt;
 }
-
 
