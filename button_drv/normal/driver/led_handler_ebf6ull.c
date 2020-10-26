@@ -22,15 +22,15 @@
 #include "led_typedef.h"
 #include "led_handler_ebf6ull.h"
 
-static void ebf6ull_led_struct_init ( void );
-static void ebf6ull_led_init( u8 which_led );
-static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt );
+static void ebf6ull_led_btn_struct_init ( void );
+static void ebf6ull_led_btn_init( u8 which_led );
+static void ebf6ull_led_btn_ctl ( u8 which_led, LED_OPT_DEF opt );
 static u8 ebf6ull_led_get_stat ( u8 which_led );
 
 static void ebf6ull_led_pwm_init( u8 which_led, u32 pwm_freq );
 static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
 
-static led_property_typedef ledx[LED_NUM];
+static led_btn_property_typedef ledx[LED_NUM];
 
 static CCM_Type  *REMAP_CCM      = NULL;
 static GPIO_Type *REMAP_GPIO1    = NULL;
@@ -38,15 +38,15 @@ static GPIO_Type *REMAP_GPIO4    = NULL;
 static GPIO_Type *REMAP_GPIO5    = NULL;
 
 static led_btn_ctl_typedef ebf6ull_led_btn_opt_s = {
-    .init       = ebf6ull_led_init,
-    .ctl        = ebf6ull_led_ctl,
+    .init       = ebf6ull_led_btn_init,
+    .ctl        = ebf6ull_led_btn_ctl,
     .g_stat     = ebf6ull_led_get_stat,
-    .s_init     = ebf6ull_led_struct_init,
+    .s_init     = ebf6ull_led_btn_struct_init,
     .pwm_init   = ebf6ull_led_pwm_init,
     .pwm_ctl    = ebf6ull_led_pwm_ctl,
 };
 
-static void ebf6ull_led_struct_init ( void )
+static void ebf6ull_led_btn_struct_init ( void )
 {
     u8 i;
     for ( i = 0; i < LED_NUM; i++ ) {
@@ -62,7 +62,7 @@ static void ebf6ull_led_struct_init ( void )
     }
 }
 
-static void ebf6ull_led_init( u8 which_led )
+static void ebf6ull_led_btn_init( u8 which_led )
 {
 
     /* 检查是否配置过led引脚 */
@@ -119,7 +119,7 @@ static void ebf6ull_led_init( u8 which_led )
 
 }
 
-static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt )
+static void ebf6ull_led_btn_ctl ( u8 which_led, LED_OPT_DEF opt )
 {
     /* LED 负极拉低时 LED电亮 */
     if ( opt == LED_OPT_ON ) {

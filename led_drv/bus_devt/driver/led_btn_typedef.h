@@ -50,7 +50,7 @@ typedef struct {
     u32 dr_oft;
     u32 clk_oft;
     led_reg_typedef reg;
-} led_property_typedef;
+} led_btn_property_typedef;
 
 
 typedef struct {

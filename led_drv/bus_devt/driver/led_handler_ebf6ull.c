@@ -22,9 +22,9 @@
 #include "led_btn_typedef.h"
 #include "led_handler_ebf6ull.h"
 
-static void ebf6ull_led_struct_init ( void );
-static void ebf6ull_led_init( u8 which_dev );
-static void ebf6ull_led_ctl ( u8 which_dev, LED_OPT_DEF opt );
+static void ebf6ull_led_btn_struct_init ( void );
+static void ebf6ull_led_btn_init( u8 which_dev );
+static void ebf6ull_led_btn_ctl ( u8 which_dev, LED_OPT_DEF opt );
 static u8 ebf6ull_led_btn_get_stat ( u8 which_dev );
 
 static void ebf6ull_led_pwm_init( u8 which_dev, u32 pwm_freq );
@@ -32,7 +32,7 @@ static void ebf6ull_led_pwm_ctl( u8 which_dev, u32 pwm_freq, LED_PWM_OPT_DEF opt
 
 extern u32 dev_param[20][3];
 extern u8 dev_num;
-static led_property_typedef ledx[10];
+static led_btn_property_typedef devx[10];
 
 static CCM_Type  *REMAP_CCM      = NULL;
 static GPIO_Type *REMAP_GPIO1    = NULL;
@@ -40,20 +40,20 @@ static GPIO_Type *REMAP_GPIO4    = NULL;
 static GPIO_Type *REMAP_GPIO5    = NULL;
 
 static led_btn_ctl_typedef ebf6ull_led_btn_opt_s = {
-    .init       = ebf6ull_led_init,
-    .ctl        = ebf6ull_led_ctl,
+    .init       = ebf6ull_led_btn_init,
+    .ctl        = ebf6ull_led_btn_ctl,
     .g_stat     = ebf6ull_led_btn_get_stat,
-    .s_init     = ebf6ull_led_struct_init,
+    .s_init     = ebf6ull_led_btn_struct_init,
     .pwm_init   = ebf6ull_led_pwm_init,
     .pwm_ctl    = ebf6ull_led_pwm_ctl,
 };
 
-static void ebf6ull_led_struct_init ( void )
+static void ebf6ull_led_btn_struct_init ( void )
 {
     u8 i;
     for ( i = 0; i < dev_num; i++ ) {
-        ledx[i].status = 0;
-        ledx[i].conf_status = 0;
+        devx[i].status = 0;
+        devx[i].conf_status = 0;
     }
 
     if ( REMAP_CCM == NULL ) {
@@ -66,48 +66,48 @@ static void ebf6ull_led_struct_init ( void )
     for ( i = 0; i < dev_num; i++ ) {
         switch ( dev_param[i][0] ) {
         case 1:
-            ledx[i].reg.REMAP_CCM_CCGRx = &REMAP_CCM->CCGR1;
-            ledx[i].reg.REMAP_GPIOx     = REMAP_GPIO1;
+            devx[i].reg.REMAP_CCM_CCGRx = &REMAP_CCM->CCGR1;
+            devx[i].reg.REMAP_GPIOx     = REMAP_GPIO1;
             if ( dev_param[i][1] < 10 ) {
-                ledx[0].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x5C + (0x4*dev_param[i][1])), 4 );
+                devx[0].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x5C + (0x4*dev_param[i][1])), 4 );
             }
-            ledx[i].clk_oft = 26;
+            devx[i].clk_oft = 26;
             break;
         case 4:
-            ledx[i].reg.REMAP_CCM_CCGRx = &REMAP_CCM->CCGR3;
-            ledx[i].reg.REMAP_GPIOx     = REMAP_GPIO4;
+            devx[i].reg.REMAP_CCM_CCGRx = &REMAP_CCM->CCGR3;
+            devx[i].reg.REMAP_GPIOx     = REMAP_GPIO4;
             if ( dev_param[i][1] >= 17 ) {
-                ledx[i].reg.REMAP_PAD       = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1D4 + (0x4*(dev_param[i][1]-17))), 4 );
+                devx[i].reg.REMAP_PAD       = (__IO u32 *)ioremap( (IOMUXC_BASE + 0x1D4 + (0x4*(dev_param[i][1]-17))), 4 );
             }
-            ledx[i].clk_oft = 12;
+            devx[i].clk_oft = 12;
             break;
         case 5:
-            ledx[i].reg.REMAP_CCM_CCGRx = &REMAP_CCM->CCGR1;
-            ledx[i].reg.REMAP_GPIOx     = REMAP_GPIO5;
+            devx[i].reg.REMAP_CCM_CCGRx = &REMAP_CCM->CCGR1;
+            devx[i].reg.REMAP_GPIOx     = REMAP_GPIO5;
             if ( dev_param[i][1] < 10 ) {
-                ledx[i].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x8 + (0x4*dev_param[i][1])) , 4 );
+                devx[i].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x8 + (0x4*dev_param[i][1])) , 4 );
             } else {
-                ledx[i].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x0 + (0x4*(dev_param[i][1]-10))) , 4 );
+                devx[i].reg.REMAP_PAD   = (__IO u32 *)ioremap( (IOMUXC_SNVS_BASE + 0x0 + (0x4*(dev_param[i][1]-10))) , 4 );
             }
-            ledx[i].clk_oft = 30;
+            devx[i].clk_oft = 30;
             break;
         default:
             break;
         }
 
         /* 设置时钟及复用、方向和初始状态 */
-        *ledx[i].reg.REMAP_CCM_CCGRx    |=  3<<(ledx[i].clk_oft);
-        *ledx[i].reg.REMAP_PAD = 0x5;
-        ledx[i].dr_oft = dev_param[i][1];
+        *devx[i].reg.REMAP_CCM_CCGRx    |=  3<<(devx[i].clk_oft);
+        *devx[i].reg.REMAP_PAD = 0x5;
+        devx[i].dr_oft = dev_param[i][1];
         /* 如果设备是LED */
         if ( dev_param[i][2] == DEV_IS_LED ) {
-            ledx[i].reg.REMAP_GPIOx->DR     |=  (1 << ledx[i].dr_oft);
-            ledx[i].reg.REMAP_GPIOx->GDIR   |=  1 << ledx[i].dr_oft;
-            ledx[i].status = 0;
+            devx[i].reg.REMAP_GPIOx->DR     |=  (1 << devx[i].dr_oft);
+            devx[i].reg.REMAP_GPIOx->GDIR   |=  1 << devx[i].dr_oft;
+            devx[i].status = 0;
         }
         /* 如果设备是BTN */ 
         else if ( dev_param[i][2] == DEV_IS_BTN ) {
-            ledx[i].reg.REMAP_GPIOx->GDIR   &=~  1 << ledx[i].dr_oft;
+            devx[i].reg.REMAP_GPIOx->GDIR   &=~  1 << devx[i].dr_oft;
         }
 
         pr_info( "device %d is %s.\n", i, (dev_param[i][2])?("btn"):("led") );
@@ -116,21 +116,21 @@ static void ebf6ull_led_struct_init ( void )
 
 }
 
-static void ebf6ull_led_init( u8 which_dev )
+static void ebf6ull_led_btn_init( u8 which_dev )
 {
 
 }
 
-static void ebf6ull_led_ctl ( u8 which_dev, LED_OPT_DEF opt )
+static void ebf6ull_led_btn_ctl ( u8 which_dev, LED_OPT_DEF opt )
 {
     /* LED 负极拉低时 LED电亮 */
     if ( dev_param[which_dev][2] == DEV_IS_LED ) {
         if ( opt == LED_OPT_ON ) {
-            ledx[which_dev].reg.REMAP_GPIOx->DR &=~ (1 << ledx[which_dev].dr_oft);
-            ledx[which_dev].status = 1;
+            devx[which_dev].reg.REMAP_GPIOx->DR &=~ (1 << devx[which_dev].dr_oft);
+            devx[which_dev].status = 1;
         } else if ( opt == LED_OPT_OFF ) {
-            ledx[which_dev].reg.REMAP_GPIOx->DR |=  (1 << ledx[which_dev].dr_oft);
-            ledx[which_dev].status = 0;
+            devx[which_dev].reg.REMAP_GPIOx->DR |=  (1 << devx[which_dev].dr_oft);
+            devx[which_dev].status = 0;
         }
     }
 
@@ -138,7 +138,7 @@ static void ebf6ull_led_ctl ( u8 which_dev, LED_OPT_DEF opt )
 
 static u8 ebf6ull_led_btn_get_stat ( u8 which_dev )
 {
-    return (ledx[which_dev].reg.REMAP_GPIOx->DR & (1 << ledx[which_dev].dr_oft))? \
+    return (devx[which_dev].reg.REMAP_GPIOx->DR & (1 << devx[which_dev].dr_oft))? \
            (0):(1);
 }
 
@@ -163,7 +163,7 @@ static void ebf6ull_led_pwm_ctl( u8 which_dev, u32 pwm_freq, LED_PWM_OPT_DEF opt
 
 led_btn_ctl_typedef *ebf6ull_led_opr_get(void) 
 {
-    ebf6ull_led_struct_init();
+    ebf6ull_led_btn_struct_init();
     return &ebf6ull_led_btn_opt_s;
 }
 

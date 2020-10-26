@@ -44,7 +44,7 @@ typedef struct {
     u8  conf_status;
     u32 oft;
     led_reg_typedef reg;
-} led_property_typedef;
+} led_btn_property_typedef;
 
 
 typedef struct {
