@@ -5,5 +5,5 @@ IMX6ULL-drivers-modules
 
 # Modules list:
     hello driver ( bus and normal )
-    led   driver ( bus and normal )
+    led   driver ( bus and bus_devt, normal )
     pwm   driver ( bus and normal )
