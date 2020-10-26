@@ -28,8 +28,8 @@
  * @brief user header files
  ************************************************/
 #include "imx6ull_common_inc.h"
-#include "led_dev.h"
-#include "led_typedef.h"
+#include "led_btn_dev.h"
+#include "led_btn_typedef.h"
 #include "led_btn_handler_ebf6ull.h"
 
 /************************************************
@@ -40,7 +40,7 @@
 /************************************************
  * @brief extern functions
  ************************************************/
-extern void led_drv_core_device_create ( u8 minor );
+extern void led_drv_core_device_create ( u8 minor, EBF_DEV_TYPE dev_type );
 extern void led_drv_core_device_destroy( u8 minor );
 extern void register_led_opt( led_btn_ctl_typedef *this_led_opt );
 
@@ -75,6 +75,9 @@ extern led_btn_ctl_typedef ebf6ull_led_btn_opt_s;
 static const struct of_device_id of_led_ebf6ull_match_table[] = {
 	{ .compatible = "imx6ull,led" },
     { .compatible = "ebf6ull,led" },
+
+    { .compatible = "imx6ull,btn" },
+    { .compatible = "ebf6ull,btn" },
 	{ }
 };
 MODULE_DEVICE_TABLE(of, of_led_ebf6ull_match_table);
@@ -90,7 +93,7 @@ static struct platform_driver led_driver_s = {
 
 
 u8 dev_num = 0;
-u32 dev_param[20][2]  = {0};
+u32 dev_param[20][3]  = {0};
 
 /************************************************
  * @brief function realized
@@ -108,11 +111,12 @@ static int led_drv_probe(struct platform_device *pdev)
 
     err = of_property_read_u32( dev_np, "gpiox", &dev_param[dev_num][0] );
     err = of_property_read_u32( dev_np, "pinx" , &dev_param[dev_num][1] );
-    pr_info( "probe err: %d\n", err );
+    err = of_property_read_u32( dev_np, "ebf_type" , &dev_param[dev_num][2] );
 
-    led_drv_core_device_create( dev_num );
+    /* 根据设备号和ebf_type创建设备 */
+    led_drv_core_device_create( dev_num, dev_param[dev_num][2] );
 
-    pr_info( "The %s's %s %d has been create.\n", pdev->name, dev_np->name, dev_num );
+    pr_info( "The %s has been create.\n", pdev->name );
 
     dev_num++;
 
