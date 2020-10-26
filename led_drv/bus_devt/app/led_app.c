@@ -18,13 +18,13 @@
 #include <stdlib.h>
 #include <string.h> 
 
-static char def_led[] = "LED_D7";
+static char def_led[] = "led_ebf7";
 static char def_opt[] = "on";
 static char path_prefix[20] = "/dev/";
 
 typedef struct {
     int     param_num;
-    char    ledx[8];
+    char    ledx[20];
     char    ledx_opt[4];
     char    ledx_pwm_param;
 } cmd_s;

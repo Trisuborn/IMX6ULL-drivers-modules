@@ -89,7 +89,7 @@ static ssize_t led_drv_core_read (struct file *file, char __user * ubuf, size_t 
     u8 ledx = iminor( inode );
     int ledx_stat = -1;
 
-    pr_info( "read LED_D%d status\n", ledx );
+    pr_info( "read led_ebf%d status\n", ledx );
 
     ledx_stat = led_opt->g_stat( ledx );
     err = copy_to_user( ubuf, &ledx_stat, 1 );
@@ -107,7 +107,7 @@ static ssize_t led_drv_core_writ (struct file *file, const char __user *ubuf, si
     u8 pwm_freq;
     unsigned long err;
 
-    pr_info( "write into LED_D%d\n", ledx );
+    pr_info( "write into led_ebf%d\n", ledx );
 
     err = copy_from_user( &opt, ubuf, 1 );
     /* 判断普通模式还是PWM模式 */
@@ -125,7 +125,7 @@ static ssize_t led_drv_core_writ (struct file *file, const char __user *ubuf, si
 static int led_drv_core_open (struct inode *inode, struct file *file) 
 {
     u8 ledx = iminor( inode );
-    pr_info( "init LED_D%d\n", ledx );
+    pr_info( "init led_ebf%d\n", ledx );
     led_opt->init( ledx );
     return 0;
 }
@@ -133,7 +133,7 @@ static int led_drv_core_open (struct inode *inode, struct file *file)
 static int led_drv_core_release (struct inode *inode, struct file *file) 
 {
     u8 ledx = iminor( inode );
-    pr_info( "release LED_D%d\n", ledx );
+    pr_info( "release led_ebf%d\n", ledx );
     return 0;
 }
 
@@ -145,7 +145,7 @@ static int __init led_drv_core_init(void)
 
     major = register_chrdev( 0, LED_MOD_NAME, &led_fopt );
 
-    led_drv_core_class = class_create(THIS_MODULE, "led_class");
+    led_drv_core_class = class_create(THIS_MODULE, "led_ebf6ull_class");
 	if (IS_ERR(led_drv_core_class)) {
         pr_info( "%s line %d class create error\n", __FUNCTION__, __LINE__ );
 		res = PTR_ERR(led_drv_core_class);
@@ -165,7 +165,7 @@ static void __exit led_drv_core_exit(void)
 
 static void led_drv_core_device_create( u8 minor )
 {
-    device_create(led_drv_core_class, NULL, MKDEV(major, minor), NULL, "LED_D%d", minor+4 ); 
+    device_create(led_drv_core_class, NULL, MKDEV(major, minor), NULL, "led_ebf%d", minor+4 ); 
 }
 
 static void led_drv_core_device_destroy( u8 minor )

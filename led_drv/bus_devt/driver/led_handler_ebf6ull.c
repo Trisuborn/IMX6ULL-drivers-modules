@@ -104,6 +104,8 @@ static void ebf6ull_led_struct_init ( void )
         ledx[i].dr_oft = dev_param[i][1];
         ledx[i].reg.REMAP_GPIOx->GDIR   |= 1 << ledx[i].dr_oft;
         
+        ledx[i].reg.REMAP_GPIOx->DR |=  (1 << ledx[i].dr_oft);
+        ledx[i].status = 0;
     }
 
 }

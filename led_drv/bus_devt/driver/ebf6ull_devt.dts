@@ -14,26 +14,51 @@
 
 /* 根节点 */
 / {
-    /* LED_Dx子节点 */
-    LED_D@4 {
+
+    led_ebf6ull_parent {
         compatible = EBF6ULL_LED_COMPATIBLE;
-        gpiox = <1>;
-        pinx  = <4>;
+        /* LED_Dx子节点 */
+        ebf_led4 {
+            compatible = EBF6ULL_LED_COMPATIBLE;
+            gpiox = <1>;
+            pinx  = <4>;
+        };
+        ebf_led5 {
+            compatible = EBF6ULL_LED_COMPATIBLE;
+            gpiox = <4>;
+            pinx  = <20>;
+        };
+        ebf_led6 {
+            compatible = EBF6ULL_LED_COMPATIBLE;
+            gpiox = <4>;
+            pinx  = <19>;
+        };
+        ebf_led7 {
+            compatible = EBF6ULL_LED_COMPATIBLE;
+            gpiox = <5>;
+            pinx  = <3>;
+        };
     };
-    LED_D@5 {
-        compatible = EBF6ULL_LED_COMPATIBLE;
-        gpiox = <4>;
-        pinx  = <20>;
-    };
-    LED_D@6 {
-        compatible = EBF6ULL_LED_COMPATIBLE;
-        gpiox = <4>;
-        pinx  = <19>;
-    };
-    LED_D@7 {
-        compatible = EBF6ULL_LED_COMPATIBLE;
-        gpiox = <5>;
-        pinx  = <3>;
-    };
+    // /* LED_Dx子节点 */
+    // ebf_led4 {
+    //     compatible = EBF6ULL_LED_COMPATIBLE;
+    //     gpiox = <1>;
+    //     pinx  = <4>;
+    // };
+    // ebf_led5 {
+    //     compatible = EBF6ULL_LED_COMPATIBLE;
+    //     gpiox = <4>;
+    //     pinx  = <20>;
+    // };
+    // ebf_led6 {
+    //     compatible = EBF6ULL_LED_COMPATIBLE;
+    //     gpiox = <4>;
+    //     pinx  = <19>;
+    // };
+    // ebf_led7 {
+    //     compatible = EBF6ULL_LED_COMPATIBLE;
+    //     gpiox = <5>;
+    //     pinx  = <3>;
+    // };
     
 };

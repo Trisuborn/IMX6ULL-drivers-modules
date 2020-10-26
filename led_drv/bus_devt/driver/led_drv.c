@@ -60,7 +60,9 @@ module_init( led_drv_init );
 module_exit( led_drv_exit );
 MODULE_AUTHOR( "Trisuborn <ttowfive@gmail.com>  Github: https://github.com/Trisuborn" );
 MODULE_DESCRIPTION( "led driver." );
+MODULE_SOFTDEP( "preload: led_core" );
 MODULE_LICENSE("GPL");
+
 
 /************************************************
  * @brief extern var
@@ -75,6 +77,7 @@ static const struct of_device_id of_led_ebf6ull_match_table[] = {
     { .compatible = "ebf6ull,led" },
 	{ }
 };
+MODULE_DEVICE_TABLE(of, of_led_ebf6ull_match_table);
 
 static struct platform_driver led_driver_s = {
     .probe  = led_drv_probe,
@@ -84,6 +87,7 @@ static struct platform_driver led_driver_s = {
         .of_match_table = of_led_ebf6ull_match_table,
 	},
 };
+
 
 u8 dev_num = 0;
 u32 dev_param[20][2]  = {0};
@@ -122,8 +126,8 @@ static int led_drv_remove(struct platform_device *pdev)
     struct device_node *dev_np = NULL;
     int err;
 
-    u8 gpiox = 0;
-    u8 pinx  = 0;
+    u32 gpiox = 0;
+    u32 pinx  = 0;
     
     dev_np = pdev->dev.of_node;
     if ( dev_np == NULL ) {
@@ -131,13 +135,13 @@ static int led_drv_remove(struct platform_device *pdev)
         return -1;
     }
     
-    err = of_property_read_u8( dev_np, "gpiox", &gpiox );
-    err = of_property_read_u8( dev_np, "pinx" , &pinx );
+    err = of_property_read_u32( dev_np, "gpiox", &gpiox );
+    err = of_property_read_u32( dev_np, "pinx" , &pinx );
 
     for ( i = 0; i < dev_num; i++ ) {
-        if ( (gpiox == dev_param[dev_num][0]) && (pinx == dev_param[dev_num][1]) ) {
+        if ( (gpiox == dev_param[i][0]) && (pinx == dev_param[i][1]) ) {
             led_drv_core_device_destroy( i );
-            pr_info( "The %s's %s %d has been destroied.\n", pdev->name, dev_np->name, i );
+            pr_info( "%d %d\n", dev_param[i][0], dev_param[i][1] );
             break;
         }
     }
@@ -166,5 +170,6 @@ register_fail:
 
 static void __exit led_drv_exit( void )
 {
+    
     platform_driver_unregister( &led_driver_s );
 }
