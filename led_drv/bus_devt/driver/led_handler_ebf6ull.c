@@ -130,7 +130,9 @@ static void ebf6ull_led_ctl ( u8 which_led, LED_OPT_DEF opt )
 static u8 ebf6ull_led_get_stat ( u8 which_led )
 {
     pr_info( "led_status_buf: %d\n ", ledx[which_led].status );
-    return ledx[which_led].status;
+    // return ledx[which_led].status
+    return (ledx[which_led].reg.REMAP_GPIOx->DR & (1 << ledx[which_led].dr_oft))? \
+           (0):(1);
 }
 
 
