@@ -39,7 +39,7 @@ static GPIO_Type *REMAP_GPIO1    = NULL;
 static GPIO_Type *REMAP_GPIO4    = NULL;
 static GPIO_Type *REMAP_GPIO5    = NULL;
 
-static led_ctl_typedef ebf6ull_led_opr_s = {
+static led_btn_ctl_typedef ebf6ull_led_btn_opt_s = {
     .init       = ebf6ull_led_init,
     .ctl        = ebf6ull_led_ctl,
     .g_stat     = ebf6ull_led_get_stat,
@@ -150,9 +150,9 @@ static void ebf6ull_led_pwm_ctl( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt
 
 }
 
-led_ctl_typedef *ebf6ull_led_opr_get(void) 
+led_btn_ctl_typedef *ebf6ull_led_opr_get(void) 
 {
     ebf6ull_led_struct_init();
-    return &ebf6ull_led_opr_s;
+    return &ebf6ull_led_btn_opt_s;
 }
 

@@ -1,6 +1,6 @@
 
-#ifndef __LED_TYPEDEF_H__
-#define __LED_TYPEDEF_H__
+#ifndef __LED_BTN_TYPEDEF_H__
+#define __LED_BTN_TYPEDEF_H__
 
 
 #include "imx6ull_common_inc.h"
@@ -29,6 +29,11 @@ typedef enum LED_Dx{
     LED_D7      ,
 } LED_Dx;
 
+typedef enum EBF_DEV_TYPE{
+    DEV_IS_LED  = 0 ,
+    DEV_IS_BTN      ,
+} EBF_DEV_TYPE;
+
 /************************
  * @brief LED class typedef
  ************************/
@@ -55,6 +60,6 @@ typedef struct {
     void (*s_init)   ( void );
     void (*pwm_init) ( u8 which_led, u32 pwm_freq );
     void (*pwm_ctl)  ( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
-} led_ctl_typedef;
+} led_btn_ctl_typedef;
 
 #endif // !__LED_TYPEDEF_H__

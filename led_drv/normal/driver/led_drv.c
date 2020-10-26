@@ -57,7 +57,7 @@ MODULE_LICENSE("GPL");
 static u8 major = 0;
 static u8 mod_name[] = "my_led_mod";
 static struct class *led_drv_class;
-static led_ctl_typedef *led_opr_p;
+static led_btn_ctl_typedef *led_opr_p;
 struct file_operations led_fopt = {
     .owner      = THIS_MODULE,
     .read       = led_drv_read,

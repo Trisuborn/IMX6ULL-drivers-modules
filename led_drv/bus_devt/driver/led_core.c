@@ -32,7 +32,7 @@
  ************************/
 #include "imx6ull_common_inc.h"
 #include "led_dev.h"
-#include "led_typedef.h"
+#include "led_btn_typedef.h"
 
 /**
  * @brief functions declare
@@ -47,9 +47,9 @@ static void __exit led_drv_core_exit(void);
 /************************************************
  * @brief EXPORT_SYMBOL function
  ************************************************/
-static void led_drv_core_device_create( u8 minor );
+static void led_drv_core_device_create( u8 minor, EBF_DEV_TYPE dev_type );
 static void led_drv_core_device_destroy( u8 minor );
-static void register_led_opt( led_ctl_typedef *this_led_opt );
+static void register_led_opt( led_btn_ctl_typedef *this_led_opt );
 
 /************************************************
  * @brief module and EXPORT_SYMBOL conf
@@ -69,7 +69,7 @@ EXPORT_SYMBOL( register_led_opt );
  ************************************************/
 static u8 major = 0;
 static struct class *led_drv_core_class;
-static led_ctl_typedef *led_opt;
+static led_btn_ctl_typedef *led_opt;
 struct file_operations led_fopt = {
     .owner      = THIS_MODULE,
     .read       = led_drv_core_read,
@@ -163,9 +163,22 @@ static void __exit led_drv_core_exit(void)
     unregister_chrdev( major, LED_MOD_NAME );
 }
 
-static void led_drv_core_device_create( u8 minor )
+static void led_drv_core_device_create( u8 minor, EBF_DEV_TYPE dev_type )
 {
-    device_create(led_drv_core_class, NULL, MKDEV(major, minor), NULL, "led_ebf%d", minor+4 ); 
+    static u8 led_num = 4;
+    static u8 btn_num = 0;
+    
+    device_create(  led_drv_core_class, \
+                    NULL, MKDEV(major, minor), \
+                    NULL, \
+                    (dev_type)?("btn_ebf%d"):("led_ebf%d") , \
+                    (dev_type)?(btn_num):(led_num) ); 
+    
+    if ( dev_type == DEV_IS_BTN )
+        btn_num++;
+    else if ( dev_type == DEV_IS_LED )
+        led_num++;
+
 }
 
 static void led_drv_core_device_destroy( u8 minor )
@@ -173,7 +186,7 @@ static void led_drv_core_device_destroy( u8 minor )
     device_destroy(led_drv_core_class, MKDEV(major, minor));
 }
 
-static void register_led_opt( led_ctl_typedef *this_led_opt )
+static void register_led_opt( led_btn_ctl_typedef *this_led_opt )
 {
     led_opt = this_led_opt;
 }

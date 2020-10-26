@@ -58,7 +58,7 @@ MODULE_LICENSE("GPL");
 static u8 major = 0;
 static u8 mod_name[] = "pwm_mod";
 static struct class *pwm_drv_class;
-// static led_ctl_typedef *led_opr_p;
+// static led_btn_ctl_typedef *led_opr_p;
 
 struct file_operations pwm_fopt = {
     .owner      = THIS_MODULE,

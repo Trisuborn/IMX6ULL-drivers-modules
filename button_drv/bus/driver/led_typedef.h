@@ -55,6 +55,6 @@ typedef struct {
     void (*s_init)   ( void );
     void (*pwm_init) ( u8 which_led, u32 pwm_freq );
     void (*pwm_ctl)  ( u8 which_led, u32 pwm_freq, LED_PWM_OPT_DEF opt );
-} led_ctl_typedef;
+} led_btn_ctl_typedef;
 
 #endif // !__LED_TYPEDEF_H__

@@ -41,7 +41,7 @@
  ************************************************/
 extern void led_drv_core_device_create ( u8 minor );
 extern void led_drv_core_device_destroy( u8 minor );
-extern void register_led_opt( led_ctl_typedef *this_led_opt );
+extern void register_led_opt( led_btn_ctl_typedef *this_led_opt );
 
 /************************************************
  * @brief function declare
@@ -64,7 +64,7 @@ MODULE_LICENSE("GPL");
 /************************************************
  * @brief extern var
  ************************************************/
-extern led_ctl_typedef ebf6ull_led_opr_s;
+extern led_btn_ctl_typedef ebf6ull_led_btn_opt_s;
 
 /************************************************
  * @brief static var

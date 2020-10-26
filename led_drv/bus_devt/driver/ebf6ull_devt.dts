@@ -14,26 +14,35 @@
 
 /* 根节点 */
 / {
-    /* LED_Dx子节点 */
     ebf_led4 {
-        compatible = EBF6ULL_LED_COMPATIBLE;
+        compatible = "imx6ull,led";
+        ebf_type = <0>;
         gpiox = <1>;
         pinx  = <4>;
     };
     ebf_led5 {
-        compatible = EBF6ULL_LED_COMPATIBLE;
+        compatible = "imx6ull,led";
+        ebf_type = <0>;
         gpiox = <4>;
         pinx  = <20>;
     };
     ebf_led6 {
-        compatible = EBF6ULL_LED_COMPATIBLE;
+        compatible = "imx6ull,led";
+        ebf_type = <0>;
         gpiox = <4>;
         pinx  = <19>;
     };
     ebf_led7 {
-        compatible = EBF6ULL_LED_COMPATIBLE;
+        compatible = "imx6ull,led";
+        ebf_type = <0>;
         gpiox = <5>;
         pinx  = <3>;
+    };
+    ebf_btn0 {
+        compatible = "imx6ull,btn";
+        ebf_type = <1>;
+        gpiox = <5>;
+        pinx  = <1>;
     };
     
 };
