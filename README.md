@@ -5,7 +5,7 @@ IMX6ULL-drivers-modules
 
 # Modules list:
     hello           driver ( bus and normal )
-    led and btn     driver ( bus and bus_devt, normal )
+    led and btn     driver ( bus and bus_devt, bus_devt_pinctrl, normal )
         btn driver use query method.
     btn             driver ( bus and bus_devt, normal )
     pwm             driver ( bus and normal )
