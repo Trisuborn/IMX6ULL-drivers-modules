@@ -23,6 +23,7 @@
 #include <linux/uaccess.h>
 #include <linux/of.h>
 #include <linux/platform_device.h>
+#include <linux/gpio/consumer.h>
 
 /************************************************
  * @brief user header files
@@ -91,9 +92,10 @@ static struct platform_driver led_driver_s = {
 	},
 };
 
-
+struct gpio_desc *dev_gd[10];
+u32 dev_param[10]  = {0};
 u8 dev_num = 0;
-u32 dev_param[20][3]  = {0};
+
 
 /************************************************
  * @brief function realized
@@ -102,19 +104,27 @@ static int led_drv_probe(struct platform_device *pdev)
 {
     struct device_node *dev_np = NULL;
     int err;
-    
-    dev_np = pdev->dev.of_node;
-    if ( dev_np == NULL ) {
-        pr_info( "probe node_get_error" );
-        return -1;
-    }
 
-    err = of_property_read_u32( dev_np, "gpiox", &dev_param[dev_num][0] );
-    err = of_property_read_u32( dev_np, "pinx" , &dev_param[dev_num][1] );
-    err = of_property_read_u32( dev_np, "ebf_type" , &dev_param[dev_num][2] );
+    dev_gd[dev_num] = gpiod_get( &pdev->dev, "dev", 0 );
+    
+    if (IS_ERR(dev_gd[dev_num])) {
+		dev_err(&pdev->dev, "Failed to get GPIO for led\n");
+		return PTR_ERR(dev_gd[dev_num]);
+	}
+
+    // dev_np = pdev->dev.of_node;
+    // if ( dev_np == NULL ) {
+    //     pr_info( "probe node_get_error" );
+    //     return -1;
+    // }
+
+    // err = of_property_read_u32( dev_np, "gpiox", &dev_param[dev_num][0] );
+    // err = of_property_read_u32( dev_np, "pinx" , &dev_param[dev_num][1] );
+    // err = of_property_read_u32( dev_np, "ebf_type" , &dev_param[dev_num][2] );
 
     /* 根据设备号和ebf_type创建设备 */
-    led_drv_core_device_create( dev_num, dev_param[dev_num][2] );
+    dev_param[dev_num] = 0;
+    led_drv_core_device_create( dev_num, dev_param[dev_num] );
 
     pr_info( "The %s has been create.\n", pdev->name );
 
@@ -127,27 +137,12 @@ static int led_drv_probe(struct platform_device *pdev)
 static int led_drv_remove(struct platform_device *pdev)
 {
     u8 i;
-    struct device_node *dev_np = NULL;
     int err;
 
-    u32 gpiox = 0;
-    u32 pinx  = 0;
-    
-    dev_np = pdev->dev.of_node;
-    if ( dev_np == NULL ) {
-        pr_info( "probe node_get_error" );
-        return -1;
-    }
-    
-    err = of_property_read_u32( dev_np, "gpiox", &gpiox );
-    err = of_property_read_u32( dev_np, "pinx" , &pinx );
-
     for ( i = 0; i < dev_num; i++ ) {
-        if ( (gpiox == dev_param[i][0]) && (pinx == dev_param[i][1]) ) {
-            led_drv_core_device_destroy( i );
-            pr_info( "%d %d\n", dev_param[i][0], dev_param[i][1] );
-            break;
-        }
+        led_drv_core_device_destroy( i );
+        gpiod_put(dev_gd[i]);
+        pr_info( "The %s has been destroied.\n", pdev->name );
     }
 
     return 0;

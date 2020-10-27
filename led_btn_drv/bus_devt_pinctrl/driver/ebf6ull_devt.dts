@@ -56,7 +56,7 @@
     /* normal */
     led_d4: led_d4 {                /*!< Function assigned for the core: Cortex-A7[ca7] */
         fsl,pins = <
-            MX6UL_PAD_CSI_HSYNC__GPIO4_IO20            0x000010B0
+            MX6UL_PAD_GPIO1_IO04__GPIO1_IO04           0x000010B0
         >;
     };
     led_d5: led_d5 {                /*!< Function assigned for the core: Cortex-A7[ca7] */
@@ -66,7 +66,7 @@
     };
     led_d6: led_d6 {                /*!< Function assigned for the core: Cortex-A7[ca7] */
         fsl,pins = <
-            MX6UL_PAD_CSI_HSYNC__GPIO4_IO20            0x000010B0
+            MX6UL_PAD_CSI_VSYNC__GPIO4_IO19            0x000010B0
         >;
     };
 
@@ -75,21 +75,25 @@
         compatible = "imx6ull,led";
         pinctrl-names = "default";
         pinctrl-0 = <&led_d4>;
+        dev-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
     };
     ebf6ull_mini_led_d5 {
         compatible = "imx6ull,led";
         pinctrl-names = "default";
-        pinctrl-0 = <&led_d4>;
+        pinctrl-0 = <&led_d5>;
+        dev-gpios = <&gpio4 20 GPIO_ACTIVE_LOW>;
     };
     ebf6ull_mini_led_d6 {
         compatible = "imx6ull,led";
         pinctrl-names = "default";
-        pinctrl-0 = <&led_d4>;
+        pinctrl-0 = <&led_d6>;
+        dev-gpios = <&gpio4 19 GPIO_ACTIVE_LOW>;
     };
     ebf6ull_mini_led_d7 {
         compatible = "imx6ull,led";
         pinctrl-names = "default";
         pinctrl-0 = <&led_d7>;
+        dev-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;
     };
 
 };
