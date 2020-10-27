@@ -117,10 +117,7 @@ static int led_drv_probe(struct platform_device *pdev)
     //     pr_info( "probe node_get_error" );
     //     return -1;
     // }
-
     // err = of_property_read_u32( dev_np, "gpiox", &dev_param[dev_num][0] );
-    // err = of_property_read_u32( dev_np, "pinx" , &dev_param[dev_num][1] );
-    // err = of_property_read_u32( dev_np, "ebf_type" , &dev_param[dev_num][2] );
 
     /* 根据设备号和ebf_type创建设备 */
     dev_param[dev_num] = 0;
@@ -140,9 +137,7 @@ static int led_drv_remove(struct platform_device *pdev)
     int err;
 
     for ( i = 0; i < dev_num; i++ ) {
-        led_drv_core_device_destroy( i );
         gpiod_put(dev_gd[i]);
-        pr_info( "The %s has been destroied.\n", pdev->name );
     }
 
     return 0;
@@ -169,6 +164,10 @@ register_fail:
 
 static void __exit led_drv_exit( void )
 {
-    
+    u8 i;
+    for ( i = 0; i < dev_num; i++ ) {
+        led_drv_core_device_destroy( i );
+    }
     platform_driver_unregister( &led_driver_s );
+    
 }

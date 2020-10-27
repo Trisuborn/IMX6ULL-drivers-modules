@@ -86,7 +86,6 @@ static u8 ebf6ull_led_btn_get_stat ( u8 which_dev )
 }
 
 
-
 /************************************************
  * @brief   
  * 
